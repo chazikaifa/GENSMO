@@ -8,20 +8,81 @@
 	<script type="text/javascript">
 		$(document).ready(function(){
 			var is_search = true;
-			var cur_page = 0;
 			var result = {};
 			var templet = $("#templet").clone();
 			var parent = $("#order_list");
 			var order_number = $("#order_number");
 			var page_number = $("#page_number");
+			var page_group = new Array();
+			var index = 0;
+			for(let i=0;i<5;i++){
+				page_group[i] = $("#page"+(i+1));
+			}
 			
-			function refresh_list(){
+			var sql_step = "";
+			
+			function refresh_list(cur_page){
 				let order_list = result.result;
 				let	order_sum = result.sum;
 				parent.empty();
 				
+				let page = Math.ceil(order_sum / $("#limit").val());
+				if(page > 5){
+					for(let i=0;i<5;i++){
+						page_group[i].attr("class","btn_page");
+					}
+					let start_num;
+					if(cur_page >= page || cur_page < 0){
+						page_group[0].attr("class","btn_page select");
+						index = 0;
+						start_num = 1;
+					}else if(cur_page > 1 && cur_page + 2 < page){
+						start_num = cur_page - 1;
+						page_group[2].attr("class","btn_page select");
+					}else if(cur_page <= 1){
+						start_num = 1;
+						page_group[cur_page].attr("class","btn_page select");
+					}else if(cur_page + 2 >= page){
+						start_num = page - 4;
+						page_group[cur_page+5-page].attr("class","btn_page select");
+					}
+					for(let i=0;i<5;i++){
+						page_group[i].html((start_num+i)+"");
+						page_group[i].unbind();
+						page_group[i].click(function(res){
+							if(index != start_num + i - 1){
+								index = start_num + i - 1;
+								get_list(index);
+							}
+						})
+					}
+				}else{
+					for(let i=0;i<page;i++){
+						page_group[i].attr("class","btn_page");
+						page_group[i].html((i+1)+"");
+						page_group[i].unbind();
+						page_group[i].click(function(res){
+							if(index != i){
+								index = i;
+								get_list(index);
+							}
+						})
+					}
+					for(let i=page;i<5;i++){
+						page_group[i].attr("class","btn_page none");
+					}
+					if(cur_page >= page || cur_page < 0){
+						page_group[0].attr("class","btn_page select");
+						index = 0;
+					}else{
+						page_group[cur_page].attr("class","btn_page select");
+					}
+				}
+				
+				
+				
 				order_number.html(order_sum);
-				page_number.html(Math.ceil(order_sum / $("#limit").val()));
+				page_number.html(page);
 				
 				for(x in order_list){
 					let list_item = templet.clone();
@@ -59,7 +120,7 @@
 					parent.append(list_item);
 				}
 			}
-			function get_list(){
+			function get_list(page = 0){
 				$.ajax({
 					type:"POST",
 					data:{
@@ -70,10 +131,11 @@
 						end_time_start:$("#end_time_start").val(),
 						end_time_end:$("#end_time_end").val(),
 						number:$("#number_input").val(),
-						index:cur_page*$("#limit").val(),
-						limit:$("#limit").val()
+						index:page*$("#limit").val(),
+						limit:$("#limit").val(),
+						step:sql_step
 					},
-					url:"getList.php",
+					url:"./scripts/getList.php",
 					dataType: 'json',
 					timeout: 5000,
 					beforeSend:function(){
@@ -83,12 +145,9 @@
 						alert(e.responseText);
 					},
 					success:function(data){
-						//var json = eval(data);
 						console.log(data);
 						result = data;
-						// order_list = data.result;
-						// order_sum = data.sum;
-						refresh_list();
+						refresh_list(page);
 					}
 				});
 			}
@@ -131,12 +190,46 @@
 			});
 			
 			$("#btn_refresh").click(function(){
-				get_list();
+				get_list(index);
 			});
 			
 			$("#btn_new").click(function(){
 				console.log("new");
 			});
+			
+			$("#bar_all").click(function(){
+				$(".bar_item").attr("class","bar_item");
+				$("#bar_all").attr("class","bar_item select");
+				sql_step = "";
+				get_list();
+			})
+			
+			$("#bar_finish").click(function(){
+				$(".bar_item").attr("class","bar_item");
+				$("#bar_finish").attr("class","bar_item select");
+				sql_step = "结单";
+				get_list();
+			})
+			
+			$("#bar_unfinish").click(function(){
+				$(".bar_item").attr("class","bar_item");
+				$("#bar_unfinish").attr("class","bar_item select");
+				sql_step = "未结单";
+				get_list();
+			})
+			
+			$("#bar_cancel").click(function(){
+				$(".bar_item").attr("class","bar_item");
+				$("#bar_cancel").attr("class","bar_item select");
+				sql_step = "已撤销";
+				get_list();
+			})
+			
+			$("#bar_export").click(function(){
+				alert("功能尚未完成，敬请期待！");
+			})
+			
+			get_list();
 		});
 	</script>
 	<style type="text/css">
@@ -180,6 +273,16 @@
 		
 		.bar_item:hover{
 			background: #AAAAAA;	
+		}
+		
+		.bar_item:active{
+			background: #999999;
+			color: #FFFFFF;
+		}
+		
+		.bar_item.select{
+			color:#FFFFFF;
+			background: #AAAAAA;
 		}
 		
 		#container{
@@ -373,17 +476,21 @@
 			color:#FFFFFF
 		}
 		
+		.btn_page.none{
+			display:none;
+		}
+		
 	</style>
 </head>
 <body>
 	<div id="title">政企网络服务中台本地故障单管理系统</div>
 	<div id="navigate_bar">
 			<div class="bar_head"><b>导航栏</b></div>
-			<div class="bar_item">所有工单</div>
-			<div class="bar_item">已结单</div>
-			<div class="bar_item">未结单</div>
-			<div class="bar_item">已撤单</div>
-			<div class="bar_item">工单导出</div>
+			<div id="bar_all" class="bar_item select">所有工单</div>
+			<div id="bar_finish" class="bar_item">已结单</div>
+			<div id="bar_unfinish" class="bar_item">未结单</div>
+			<div id="bar_cancel" class="bar_item">已撤单</div>
+			<div id="bar_export" class="bar_item">工单导出</div>
 	</div>
 	<div id="container">
 		<div id="search_container">
