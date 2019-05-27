@@ -2,7 +2,7 @@
 header("Content-Type: text/html;charset=utf-8");
 
 $param_name = array();
-//$param_name[0] = 'id';
+$param_name[0] = 'id';
 $param_name[1] = 'name';
 $param_name[2] = 'start_time';
 $param_name[3] = 'end_time';
@@ -38,7 +38,7 @@ foreach($param_name as $name){
 			$param[$name] = '';
 		}
 	}
-}	
+}
 
 $dbhost = 'localhost';  // mysql服务器主机地址
 $dbuser = 'root';            // mysql用户名
@@ -51,25 +51,21 @@ if(! $conn )
 mysqli_query($conn , "set names utf8");
 mysqli_select_db($conn,'GENSMO');
 
-$sql = 'INSERT INTO `order` (';
+$sql = "UPDATE `order` SET ";
 
 foreach($param_name as $name){
-	$sql .= '`'.$name.'`,';
-}
-
-$sql = substr($sql,0,strlen($sql)-1);
-$sql .= ') VALUES (';
-
-foreach($param as $p){
-	if(!is_null($p)){
-		$sql .= "'".$p."',";
-	}else{
-		$sql .= "NULL,";
+	if($name != 'id'){
+		$sql .= '`'.$name.'` = ';
+		if(!is_null($param[$name])){
+			$sql .= "'".$param[$name]."', ";
+		}else{
+			$sql .= "NULL, ";
+		}
 	}
-	
 }
-$sql = substr($sql,0,strlen($sql)-1);
-$sql .= ')';
+$id = $param['id'];
+$sql = substr($sql,0,strlen($sql)-2);
+$sql .= " WHERE `id` = '$id'";
 
 $result = mysqli_query($conn, $sql);
 if(!$result){
@@ -79,4 +75,3 @@ if(!$result){
 }
 
 mysqli_close($conn);
-?>

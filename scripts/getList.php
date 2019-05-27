@@ -54,12 +54,12 @@ if($condition != ""){
 	$condition = substr($condition,0,strlen($condition)-4);
 	$condition = "WHERE ".$condition;
 }
-$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `start_time` DESC LIMIT '.$index.','.$limit ;
+$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `create_time` DESC LIMIT '.$index.','.$limit ;
 //exit($sql);
 $result = mysqli_query($conn, $sql);
 if(!$result){
 	//$message = array("status" => "error","result" => mysqli_error());
-	die(json_encode(mysqli_error($conn)));
+	die(mysqli_error($conn));
 }else{
 	$row_number = mysqli_fetch_row(mysqli_query($conn,"SELECT FOUND_ROWS()"))[0];
 	$resList = array();

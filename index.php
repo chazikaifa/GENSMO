@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="scripts/jeDate/jedate/skin/jedate.css">
 	<script type="text/javascript">
 		$(document).ready(function(){
-			var is_search = true;
+			var is_search = false;
 			var result = {};
 			var templet = $("#templet").clone();
 			var parent = $("#order_list");
@@ -97,9 +97,17 @@
 					let btn_edit = list_item.find("#edit");
 					let btn_delete = list_item.find("#delete");
 					
+					id.attr("id","id"+x);
+					btn_view.attr("id","view"+x);
+					btn_edit.attr("id","edit"+x);
+					btn_delete.attr("id","delete"+x);
+					
 					list_item.attr("id","order_" + (parseInt(x)+1));
 					order_index.html(parseInt(x)+1);
 					id.html(order_list[x].id);
+					id.click(function(){
+						window.location.href = "edit.php?id="+id.html()+"&view=true";
+					})
 					name.html(order_list[x].name);
 					circuit_number.html(order_list[x].circuit_number);
 					trouble_symptom.html(order_list[x].trouble_symptom);
@@ -107,15 +115,37 @@
 					step.html(order_list[x].step);
 					
 					btn_view.click(function(){
-						console.log("view");
+						window.location.href = "edit.php?id="+id.html()+"&view=true";
 					});
 					
 					btn_edit.click(function(){
-						console.log("edit");
+						window.location.href = "edit.php?id="+id.html();
 					});
 					
 					btn_delete.click(function(){
-						console.log("delete");
+						if(confirm("确定删除该工单？")){
+							$.ajax({
+								type:"POST",
+								data:{
+									id:id.html(),
+								},
+								url:"./scripts/delete.php",
+								timeout: 5000,
+								beforeSend:function(){
+									
+								},
+								error:function(e){
+									alert(e.responseText);
+								},
+								success:function(data){
+									if(data == "success"){
+										location.reload();
+									}else{
+										alert(data);
+									}
+								}
+							});
+						}
 					});
 					parent.append(list_item);
 				}
@@ -145,24 +175,45 @@
 						alert(e.responseText);
 					},
 					success:function(data){
-						console.log(data);
+						//console.log(data);
 						result = data;
 						refresh_list(page);
 					}
 				});
 			}
-			$("#btn_search").click(function(){
+			
+			$("#btn_show").click(function(){
 				if(is_search){
 					$("#search_container").attr("class","hidden");
-					get_list();
+					$("#btn_search").attr("class","btn_img hidden");
+					$("#btn_empty").attr("class","btn_img hidden");
+					$("#btn_show").css("transform","rotate(0)");
 				}else{
 					$("#search_container").attr("class","");
+					$("#btn_search").attr("class","btn_img");
+					$("#btn_empty").attr("class","btn_img");
+					$("#btn_show").css("transform","rotate(-180deg)");
 				}
 				is_search = !is_search;
+			})
+			
+			$("#btn_search").click(function(){
+				get_list();
 			});
+			
+			$("#btn_empty").click(function(){
+				$("#id_input").val("");
+				$("#name_input").val("");
+				$("#start_time_start").val("");
+				$("#start_time_end").val("");
+				$("#end_time_start").val("");
+				$("#end_time_end").val("");
+				$("#number_input").val("");
+			})
 			
 			$("#start_time_start").jeDate({
 				format:"YYYY-MM-DD hh:mm:ss",
+				skinCell:"jedatered",
 				choosefun:function(elem,datas){
 					console.log(datas);
 				}
@@ -170,6 +221,7 @@
 			
 			$("#start_time_end").jeDate({
 				format:"YYYY-MM-DD hh:mm:ss",
+				skinCell:"jedatered",
 				choosefun:function(elem,datas){
 					console.log(datas);
 				}
@@ -177,6 +229,7 @@
 			
 			$("#end_time_start").jeDate({
 				format:"YYYY-MM-DD hh:mm:ss",
+				skinCell:"jedatered",
 				choosefun:function(elem,datas){
 					console.log(datas);
 				}
@@ -184,6 +237,7 @@
 			
 			$("#end_time_end").jeDate({
 				format:"YYYY-MM-DD hh:mm:ss",
+				skinCell:"jedatered",
 				choosefun:function(elem,datas){
 					console.log(datas);
 				}
@@ -194,7 +248,7 @@
 			});
 			
 			$("#btn_new").click(function(){
-				console.log("new");
+				window.location.href = "edit.php";
 			});
 			
 			$("#bar_all").click(function(){
@@ -227,6 +281,34 @@
 			
 			$("#bar_export").click(function(){
 				alert("功能尚未完成，敬请期待！");
+			})
+			
+			$("#to_first").click(function(){
+				if(index != 0){
+					get_list(0);
+					index = 0;
+				}
+			})
+			
+			$("#to_pre").click(function(){
+				if(index > 0){
+					get_list(index - 1);
+					index = index - 1;
+				}
+			})
+			
+			$("#to_next").click(function(){
+				if(index + 1 < parseInt(page_number.html())){
+					get_list(index + 1);
+					index = index + 1;
+				}
+			})
+			
+			$("#to_last").click(function(){
+				if(index != parseInt(page_number.html()) - 1){
+					get_list(parseInt(page_number.html()) - 1);
+					index = parseInt(page_number.html()) - 1;
+				}
 			})
 			
 			get_list();
@@ -297,6 +379,7 @@
 		#search_container{
 			overflow: hidden;
 			transition: all 0.5s;
+			height: 24vh;
 		}
 		
 		#search_container.hidden{
@@ -330,6 +413,31 @@
 			padding-right:0.2vw;
 		}
 		
+		#btn_show{
+			margin-left: 1vw;
+			margin-top: 2vh;
+			transition: all 0.5s;
+		}
+				
+		#btn_search{
+			transition: all 0.5s;
+		}
+		
+		#btn_search.hidden{
+			width:0;
+			padding: 0;
+		}
+		
+		#btn_empty{
+			transition: all 0.5s;
+		}
+		
+		#btn_empty.hidden{
+			width:0;
+			padding: 0;
+		}
+			
+		/*
 		#btn_search{
 			height: 4vh;
 			line-height: 4vh;
@@ -341,11 +449,8 @@
 			font-size:2vh;
 			margin: 2vh;
 		}
-		
-		#btn_search:active{
-			background: #D96666;
-		}
-		
+		*/
+				
 		#order_list{
 			height: 40vh;
 			margin:0;
@@ -493,7 +598,7 @@
 			<div id="bar_export" class="bar_item">工单导出</div>
 	</div>
 	<div id="container">
-		<div id="search_container">
+		<div id="search_container" class="hidden">
 			<div id="id_search" class="search">
 				<span class="search_title">故障编号:</span>
 				<input id="id_input" type="text" class="input" value=""/>
@@ -519,7 +624,9 @@
 				<input id="number_input" type="text" class="input" value=""/>
 			</div>
 		</div>
-		<div id="btn_search">查询</div>
+		<img id="btn_show" class="btn_img" src="img/show.png"/>
+		<img id="btn_search" class="btn_img hidden" src="img/search.png"/>
+		<img id="btn_empty" class="btn_img hidden" src="img/empty.png"/>
 		<div id="list_head">
 			<span class="index item head"><span class="content">序号</span></span>
 			<span class="item head"><span class="content">故障单编号</span></span>
