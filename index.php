@@ -188,11 +188,13 @@
 					$("#btn_search").attr("class","btn_img hidden");
 					$("#btn_empty").attr("class","btn_img hidden");
 					$("#btn_show").css("transform","rotate(0)");
+					$("#order_list").attr("class","");
 				}else{
 					$("#search_container").attr("class","");
 					$("#btn_search").attr("class","btn_img");
 					$("#btn_empty").attr("class","btn_img");
 					$("#btn_show").css("transform","rotate(-180deg)");
+					$("#order_list").attr("class","short");
 				}
 				is_search = !is_search;
 			})
@@ -418,46 +420,32 @@
 			margin-top: 2vh;
 			transition: all 0.5s;
 		}
-				
-		#btn_search{
-			transition: all 0.5s;
-		}
-		
+			
+	
 		#btn_search.hidden{
 			width:0;
 			padding: 0;
 		}
 		
-		#btn_empty{
-			transition: all 0.5s;
-		}
 		
 		#btn_empty.hidden{
 			width:0;
 			padding: 0;
-		}
-			
-		/*
-		#btn_search{
-			height: 4vh;
-			line-height: 4vh;
-			border-radius: 1vh;
-			background: #EA7777;
-			width: 9vh;
-			text-align: center;
-			color: #FFFFFF;
-			font-size:2vh;
-			margin: 2vh;
-		}
-		*/
-				
+		}		
+		
 		#order_list{
-			height: 40vh;
+			height: 76vh;
 			margin:0;
 			padding:0;
 			overflow-y:auto;
 			overflow-x:hidden;
+			transition: height 0.5s;
 		}
+		
+		#order_list.short{
+			height:52vh;
+		}
+		
 		li{
 			list-style: none;
 		}
@@ -526,6 +514,7 @@
 			background: #EA7777;
 			padding:0.5vh;
 			margin: 0.2vh;
+			transition: all 0.5s;
 		}
 		
 		.btn_img:active{

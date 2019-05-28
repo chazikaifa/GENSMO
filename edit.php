@@ -9,35 +9,41 @@
 	<link rel="stylesheet" href="css/selectordie.css">
 	<link rel="stylesheet" href="css/selectordie_theme_01.css">
 	<script type="text/javascript">
-		$(document).ready(function(){
+		$(document).ready(function () {
 			var canJump = true;
-			function adjust_textarea(obj){
+			var processList = new Array();
+			var show_template = $("#show_template").clone();
+			var edit_template = $("#edit_template").clone();
+			var add_template = $("#add_template").clone();
+			var textarea_template = $("#textarea_template").clone();
+			var div_template = $("#div_template").clone();
+			function adjust_textarea(obj) {
 				obj.style.height = 'auto';
 				obj.style.height = (obj.scrollHeight) + 'px';
 			}
-			
-			function cal_time(end_time){
-				if(end_time != ""){
+
+			function cal_time(end_time) {
+				if (end_time != "") {
 					let offset = new Date(end_time).getTime() - new Date($("#start_time").val()).getTime();
-					offset = offset/1000/60;
+					offset = offset / 1000 / 60;
 					$("#time").val(offset.toFixed(2));
 				}
 			}
-			
-			function change_trouble_reason(trouble_class){
+
+			function change_trouble_reason(trouble_class) {
 				$("#trouble_parent").empty();
 				$("#trouble_parent").append("<select id=\"trouble_reason\"><option value=\"\">请选择</option></select>");
-				if(trouble_class == "动力配套"){
+				if (trouble_class == "动力配套") {
 					$("#trouble_reason").append("<option value=\"电力系统\">电力系统</option>");
 					$("#trouble_reason").append("<option value=\"制冷系统\">制冷系统</option>");
-				}else if(trouble_class == "设备故障"){
+				} else if (trouble_class == "设备故障") {
 					$("#trouble_reason").append("<option value=\"传输设备\">传输设备</option>");
 					$("#trouble_reason").append("<option value=\"交换设备\">交换设备</option>");
 					$("#trouble_reason").append("<option value=\"数据设备\">数据设备</option>");
 					$("#trouble_reason").append("<option value=\"接入设备\">接入设备</option>");
 					$("#trouble_reason").append("<option value=\"客户设备\">客户设备</option>");
 					$("#trouble_reason").append("<option value=\"客户端联通设备\">客户端联通设备</option>");
-				}else if(trouble_class == "光缆故障"){
+				} else if (trouble_class == "光缆故障") {
 					$("#trouble_reason").append("<option value=\"市政施工\">市政施工</option>");
 					$("#trouble_reason").append("<option value=\"河涌整治\">河涌整治</option>");
 					$("#trouble_reason").append("<option value=\"恶意剪线\">恶意剪线</option>");
@@ -46,7 +52,7 @@
 					$("#trouble_reason").append("<option value=\"自然灾害\">自然灾害</option>");
 					$("#trouble_reason").append("<option value=\"光纤劣化\">光纤劣化</option>");
 					$("#trouble_reason").append("<option value=\"尾纤松动\">尾纤松动</option>");
-				}else if(trouble_class == "电缆故障"){
+				} else if (trouble_class == "电缆故障") {
 					$("#trouble_reason").append("<option value=\"市政施工\">市政施工</option>");
 					$("#trouble_reason").append("<option value=\"河涌整治\">河涌整治</option>");
 					$("#trouble_reason").append("<option value=\"恶意剪线\">恶意剪线</option>");
@@ -56,254 +62,354 @@
 					$("#trouble_reason").append("<option value=\"光纤劣化\">电缆劣化</option>");
 					$("#trouble_reason").append("<option value=\"尾纤松动\">电缆松动</option>");
 				}
-				$("#trouble_reason").selectOrDie();
+					$("#trouble_reason").selectOrDie();
+			}
+
+			function show_to_edit(obj) {
+				let textarea = textarea_template.clone();
+
+				textarea.attr("id", "");
+				textarea.html($(obj).html());
+
+				obj.replaceWith(textarea);
+				
+				textarea.each(function () {
+					this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+				}).on('input', function () {
+					adjust_textarea(this);
+				}).blur(function () {
+					processList[parseInt($(this).parent().attr("index"))] = $(this).val();
+					//console.log(processList);
+					edit_to_show($(this));
+				});
+				textarea.focus();
+			}
+
+			function edit_to_show(obj) {
+				let div = div_template.clone();
+				
+				div.attr("id","");
+				div.html($(obj).val());
+				if (GetQueryString("view") != "true") {
+					div.click(function(){
+						show_to_edit($(this));
+					})
+				}
+				obj.replaceWith(div);
 			}
 			
+			function refresh_process_list(){
+				$("#process_list").empty();
+				if(processList.length <= 0){
+					processList[0] = "";
+				}
+				for (x in processList) {
+					let template = show_template.clone();
+					let show_index = template.find("#index");
+					let content = template.find("#div_template");
+					let btn_minus = template.find("#btn_minus");
+
+					template.attr("id", "item_" + (parseInt(x) + 1));
+					template.attr("index", parseInt(x));
+					show_index.html((parseInt(x) + 1));
+					content.attr("id", "");
+					content.html(processList[x]);
+					content.click(function () {
+						if (GetQueryString("view") != "true") {
+							show_to_edit($(this) ,$(this).html());
+						}
+					})
+					if (GetQueryString("view") != "true") {
+						btn_minus.click(function () {
+							if (confirm("确定删除这一条进展？")) {
+								processList.splice(parseInt(template.attr("index")), 1);
+								refresh_process_list();
+							}
+						});
+					}else{
+						btn_minus.attr("style","display:none");
+						content.attr("class","process_content long");
+					}
+					
+					$("#process_list").append(template);
+				}
+				if (GetQueryString("view") != "true") {
+					let add = add_template.clone();
+					$("#process_list").append(add);
+					add.click(function(){
+						processList.push("");
+						refresh_process_list();
+					});
+				}
+			}
+
 			$('textarea').each(function () {
 				this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
 			}).on('input', function () {
 				adjust_textarea(this);
 			});
-									
+
 			$("select").selectOrDie({
-				onChange: function(){
-					if($(this).attr("id") == "trouble_class"){
+				onChange: function () {
+					if ($(this).attr("id") == "trouble_class") {
 						change_trouble_reason($(this).val());
-					}else if($(this).attr("id") == "step"){
-						if($(this).val() == "结单"||$(this).val() == "已撤销"){
+					} else if ($(this).attr("id") == "step") {
+						if ($(this).val() == "结单" || $(this).val() == "已撤销") {
 							$("#end_time").removeAttr("disabled");
-						}else if($(this).val() == "未结单"){
-							$("#end_time").attr("disabled","");
+						} else if ($(this).val() == "未结单") {
+							$("#end_time").attr("disabled", "");
 						}
 					}
 				}
 			});
-			function GetQueryString(name)
-			{
-				var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+			function GetQueryString(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
 				var r = window.location.search.substr(1).match(reg);
-				if(r!=null)
-					return  unescape(r[2]); 
+				if (r != null)
+					return unescape(r[2]);
 				return null;
 			}
-			if(GetQueryString("id")==null){
+			if (GetQueryString("id") == null) {
 				//新建工单
 				$("#name").removeAttr("disabled");
 				$("#start_time").removeAttr("disabled");
 				$("#trouble_symptom").removeAttr("disabled");
-				
+
 				$("#start_time").jeDate({
-					format:"YYYY-MM-DD hh:mm:ss",
-					skinCell:"jedatered",
-					choosefun:function(elem,datas){
-						console.log(datas)
+					format: "YYYY-MM-DD hh:mm:ss",
+					skinCell: "jedatered",
+					choosefun: function (elem, datas) {
+						//console.log(datas)
 					}
 				});
-			}else {
+				
+				processList[0] = "";
+				refresh_process_list();
+			} else {
 				var id = GetQueryString("id");
-				//编辑工单	
+				//编辑工单
 				$.ajax({
-					type:"POST",
-					data:{
-						id:id,
+					type: "POST",
+					data: {
+						id: id,
 					},
-					url:"./scripts/getOrderById.php",
+					url: "./scripts/getOrderById.php",
 					dataType: 'json',
 					timeout: 5000,
-					beforeSend:function(){
-						
-					},
-					error:function(e){
+					beforeSend: function () {},
+					error: function (e) {
 						alert(e.responseText);
 					},
-					success:function(data){
+					success: function (data) {
 						//console.log(data);
-						if(data.status == "fail"){
+						if (data.status == "fail") {
 							alert(data.error_msg);
-						}else if(data.status == "success"){
+						} else if (data.status == "success") {
 							//console.log(data);
-							
+
 							$("#id").val(data[0]);
 							$("#name").val(data[1]);
 							$("#start_time").val(data[2]);
 							$("#end_time").val(data[3]);
 
 							$("#time").val(data[4]);
-							
+
 							$("#step").val(data[5]);
-							
+
 							$("#trouble_symptom").val(data[6]);
 							$("#link_id").val(data[7]);
-							$("#process").html(data[8]);
+							
+							processList = data[8].split('[step]');
+							refresh_process_list();
+							//console.log(processList);
+							//$("#process").html(data[8]);
+														
 							$("#circuit_number").val(data[9]);
 							$("#contact_number").val(data[10]);
 							$("#contact_name").val(data[11]);
 							$("#area").val(data[12]);
-							
-							if(data[13] == "0" || data[13] == "1"){
+
+							if (data[13] == "0" || data[13] == "1") {
 								$("#is_trouble").val(data[13]);
-							}else {
+							} else {
 								$("#is_trouble").val("");
 							}
-							if(data[14] == "0" || data[14] == "1"){
+							if (data[14] == "0" || data[14] == "1") {
 								$("#is_remote").val(data[14]);
-							}else {
+							} else {
 								$("#is_remote").val("");
 							}
-							
+
 							$("#trouble_class").val(data[15]);
 							change_trouble_reason(data[15])
 							$("#trouble_reason").val(data[16]);
-							
+
 							$("#business_type").val(data[17]);
 							$("#remark").html(data[18]);
-							
+
 							$("#end_time").jeDate({
-								format:"YYYY-MM-DD hh:mm:ss",
-								skinCell:"jedatered",
-								minDate:$("#start_time").val(),
-								choosefun:function(elem,datas){
+								format: "YYYY-MM-DD hh:mm:ss",
+								skinCell: "jedatered",
+								minDate: $("#start_time").val(),
+								choosefun: function (elem, datas) {
 									cal_time(datas);
 								},
-								okfun:function(elem,datas){
+								okfun: function (elem, datas) {
 									cal_time(datas);
 								}
 							});
-							
-							if(data[5] == "结单"||data[5] == "已撤销"){
+
+							if (data[5] == "结单" || data[5] == "已撤销") {
 								$("#end_time").removeAttr("disabled");
-							}else if(data[5] == "未结单"){
-								$("#end_time").attr("disabled","");
+							} else if (data[5] == "未结单") {
+								$("#end_time").attr("disabled", "");
 							}
-																				
+
 							$('textarea').each(function () {
 								adjust_textarea(this);
 							});
-							
+
 							cal_time($("#end_time").val());
-							
+
 							$("select").selectOrDie("update");
-							
-							if(GetQueryString("view")=="true"){
+
+							if (GetQueryString("view") == "true") {
 								$("select").selectOrDie("disable");
-								$(".item").find("input").attr("disabled","");
-								$(".item").find("textarea").attr("disabled","");
+								$(".item").find("input").attr("disabled", "");
+								$(".item").find("textarea").attr("disabled", "");
 								$("#btn_confirm").html("编辑");
 							}
-							
-						}else{
+
+						} else {
 							alert("未知错误！")
 						}
 					}
 				});
-				
 
 			}
-			
-			$("#btn_cancel").click(function(){
+
+			$("#btn_cancel").click(function () {
 				window.location.href = "index.php";
 			})
-			
-			$("#btn_confirm").click(function(){
-				if($("#name").val() == ""){
+
+			$("#btn_confirm").click(function () {
+				if ($("#name").val() == "") {
 					alert("请输入客户名称！");
-				}else if($("#start_time").val() == ""){
+				} else if ($("#start_time").val() == "") {
 					alert("请输入故障开始时间！");
-				}else{
-					if($("#id").val()==""){
+				} else {
+					if ($("#id").val() == "") {
 						//new
-						if(canJump == true){
+						if (canJump == true) {
+							let process = "";
+							if(processList.length == 1){
+								process = processList[0];
+							}else{
+								for(let i=0;i<processList.length-1;i++){
+									process = process + processList[i] + "[step]";
+								}
+								process = process + processList[processList.length - 1];
+							}
 							$.ajax({
-								type:"POST",
-								data:{
-									name:$("#name").val(),
-									start_time:$("#start_time").val(),
-									end_time:$("#end_time").val(),
-									time:$("#time").val(),
-									step:$("#step").val(),
-									trouble_symptom:$("#trouble_symptom").val(),
-									link_id:$("#link_id").val(),
-									process:$("#process").val(),
-									circuit_number:$("#circuit_number").val(),
-									contact_number:$("#contact_number").val(),
-									contact_name:$("#contact_name").val(),
-									area:$("#area").val(),
-									is_trouble:$("#is_trouble").val(),
-									is_remote:$("#is_remote").val(),
-									trouble_class:$("#trouble_class").val(),
-									trouble_reason:$("#trouble_reason").val(),
-									business_type:$("#business_type").val(),
-									remark:$("#remark").val(),
+								type: "POST",
+								data: {
+									name: $("#name").val(),
+									start_time: $("#start_time").val(),
+									end_time: $("#end_time").val(),
+									time: $("#time").val(),
+									step: $("#step").val(),
+									trouble_symptom: $("#trouble_symptom").val(),
+									link_id: $("#link_id").val(),
+									process: process,
+									circuit_number: $("#circuit_number").val(),
+									contact_number: $("#contact_number").val(),
+									contact_name: $("#contact_name").val(),
+									area: $("#area").val(),
+									is_trouble: $("#is_trouble").val(),
+									is_remote: $("#is_remote").val(),
+									trouble_class: $("#trouble_class").val(),
+									trouble_reason: $("#trouble_reason").val(),
+									business_type: $("#business_type").val(),
+									remark: $("#remark").val(),
 								},
-								url:"./scripts/new.php",
+								url: "./scripts/new.php",
 								timeout: 5000,
-								beforeSend:function(){
+								beforeSend: function () {
 									canJump = false;
 								},
-								error:function(e){
+								error: function (e) {
 									alert(e.responseText);
 									canJump = true;
 								},
-								success:function(data){
-									if(data == "success"){
+								success: function (data) {
+									if (data == "success") {
 										$("#btn_confirm").html("新建成功！");
-										setTimeout(function(){
+										setTimeout(function () {
 											window.location.href = "index.php";
-										},1000);										
-									}else{
+										}, 1000);
+									} else {
 										canJump = true;
 										alert(data);
 									}
 								}
 							});
 						}
-					}else{
+					} else {
 						//view
-						if(GetQueryString("view")=="true"){
-							window.location.replace("edit.php?id="+$("#id").val());
-						}else if($("#step").val()=="结单" && $("#end_time").val() == ""){
+						if (GetQueryString("view") == "true") {
+							window.location.replace("edit.php?id=" + $("#id").val());
+						} else if ($("#step").val() == "结单" && $("#end_time").val() == "") {
 							alert("请输入恢复时间！");
-						}else if(canJump == true){
+						} else if (canJump == true) {
 							//update
+							let process = "";
+							if(processList.length == 1){
+								process = processList[0];
+							}else{
+								for(let i=0;i<processList.length-1;i++){
+									process = process + processList[i] + "[step]";
+								}
+								process = process + processList[processList.length - 1];
+							}
 							$.ajax({
-								type:"POST",
-								data:{
-									id:$("#id").val(),
-									name:$("#name").val(),
-									start_time:$("#start_time").val(),
-									end_time:$("#end_time").val(),
-									time:$("#time").val(),
-									step:$("#step").val(),
-									trouble_symptom:$("#trouble_symptom").val(),
-									link_id:$("#link_id").val(),
-									process:$("#process").val(),
-									circuit_number:$("#circuit_number").val(),
-									contact_number:$("#contact_number").val(),
-									contact_name:$("#contact_name").val(),
-									area:$("#area").val(),
-									is_trouble:$("#is_trouble").val(),
-									is_remote:$("#is_remote").val(),
-									trouble_class:$("#trouble_class").val(),
-									trouble_reason:$("#trouble_reason").val(),
-									business_type:$("#business_type").val(),
-									remark:$("#remark").val(),
+								type: "POST",
+								data: {
+									id: $("#id").val(),
+									name: $("#name").val(),
+									start_time: $("#start_time").val(),
+									end_time: $("#end_time").val(),
+									time: $("#time").val(),
+									step: $("#step").val(),
+									trouble_symptom: $("#trouble_symptom").val(),
+									link_id: $("#link_id").val(),
+									process: process,
+									circuit_number: $("#circuit_number").val(),
+									contact_number: $("#contact_number").val(),
+									contact_name: $("#contact_name").val(),
+									area: $("#area").val(),
+									is_trouble: $("#is_trouble").val(),
+									is_remote: $("#is_remote").val(),
+									trouble_class: $("#trouble_class").val(),
+									trouble_reason: $("#trouble_reason").val(),
+									business_type: $("#business_type").val(),
+									remark: $("#remark").val(),
 								},
-								url:"./scripts/update.php",
+								url: "./scripts/update.php",
 								timeout: 5000,
-								beforeSend:function(){
+								beforeSend: function () {
 									canJump = false;
 								},
-								error:function(e){
+								error: function (e) {
 									alert(e.responseText);
 									canJump = true;
 								},
-								success:function(data){
-									if(data == "success"){
+								success: function (data) {
+									if (data == "success") {
 										$("#btn_confirm").html("更新成功！");
-										setTimeout(function(){
+										setTimeout(function () {
 											window.location.replace("index.php");
-										},1000);										
-									}else{
+										}, 1000);
+									} else {
 										canJump = true;
 										alert(data);
 									}
@@ -427,11 +533,111 @@
 			width:-webkit-fill-available;
 			border-radius:5px;
 			height: 30px;
+			font-size:15px;
 			display:flex;
 			justify-content:center;
 			align-items:center;
 			background:#CDCDCD;
 			color:#000000;
+		}
+		
+		#process_list{
+			margin: 0;
+			padding: 0;
+			width:47.4vw;
+			height:fit-content;
+		}	
+	
+		.process_item{
+			list-style:none;
+			height:auto;
+			width:-webkit-fill-available;
+			display:flex;
+			align-items:center;
+			margin-top:10px;
+		}
+		
+		.process_item.add{
+			height: 30px;
+			border-radius:1vh;
+			background: #EA7777;
+			color: white;
+			justify-content: center;
+			font-size:15px;
+		}
+		
+		.process_item.add:hover{
+			background:#D96666;
+		}
+		
+		.process_item.add:active{
+			background:#C85555;
+		}
+		
+		.process_item > textarea{
+			margin-top: 5px;
+			height: 30px;
+			resize:none;
+			width:43.4vw;
+			font-size: 20px;
+			margin-left:0.5vw;
+			padding-top:5px;
+			padding-bottom:5px;
+			
+		}
+		#edit_template{
+			display:none;
+		}
+		
+		#show_template{
+			display:none;
+		}
+		.btn_img{
+			height: 2vh;
+			width: 2vh;
+			border-radius: 2vh;
+			background: #EA7777;
+			padding:0.5vh;
+			margin: 0.2vh;
+		}
+		
+		.process_index{
+			display:inline-block;
+			width:2vw;
+			font-size:20px;
+			height:25px;
+			color: #EA7777;
+		}
+		
+		.process_content{
+			min-height:25px;
+			display:inline-block;
+			width:40.9vw;
+			margin-left:0.5vw;
+			font-size:20px;
+			height:fit-content;
+			padding-right:0.5vw;
+			padding-left:0.5vw;
+			padding-top:5px;
+			padding-bottom:5px;
+			border-left: 1px #AAAAAA solid;
+			word-wrap:break-word;
+		}
+		
+		.process_content.long{
+			width:42.9vw;
+		}
+		
+		.process_content:hover{
+			background:#EAEAEA;
+		}
+		
+		.process_content:active{
+			background:#D9D9D9;
+		}
+		
+		.btn_img:active{
+			background: #D96666;
 		}
 		
 		.btn:hover{
@@ -549,6 +755,7 @@
 						<option value="荔湾">荔湾</option>
 						<option value="从化">从化</option>
 						<option value="增城">增城</option>
+						<option value="南沙">南沙</option>
 						<option value="非广州">非广州</option>
 					</select>
 				</div>
@@ -598,6 +805,7 @@
 				<div class="value">
 					<select id="business_type">
 						<option value="">请选择</option>
+						<option value="党政军部门">党政军部门</option>
 						<option value="金融、保险业">金融、保险业</option>
 						<option value="交通运输（含邮政、快递）、仓储业">交通运输（含邮政、快递）、仓储业</option>
 						<option value="科学教育、文化卫生">科学教育、文化卫生</option>
@@ -612,7 +820,25 @@
 			<div class="item textarea">
 				<div class="key">故障过程</div>
 				<div class="value textarea">
-					<textarea id="process" ></textarea>
+					<ul id="process_list">
+						<li id="edit_template" class="process_item" index="-1" >
+							<div id="index" class="process_index">
+								1
+							</div>
+							<textarea id="textarea_template" rows="1"></textarea>
+							<img id="btn_minus" class="btn_img" src="img/minus.png"/>
+						</li>
+						<li id="show_template" class="process_item" index="-1">
+							<div id="index" class="process_index">
+								2
+							</div>
+							<div id="div_template" class="process_content"></div>
+							<img id="btn_minus" class="btn_img" src="img/minus.png"/>
+						</li>
+						<li id="add_template" class="process_item add">
+							添加进展
+						</li>
+					</ul>
 				</div>
 			</div>
 			<div class="item textarea">
