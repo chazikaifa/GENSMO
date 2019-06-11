@@ -4,7 +4,10 @@
 	<meta charset="UTF-8">
 	<script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="scripts/jeDate/jedate/jquery.jedate.js"></script>
+	<script type="text/javascript" src="scripts/selectordie.min.js"></script>
 	<link rel="stylesheet" href="scripts/jeDate/jedate/skin/jedate.css">
+	<link rel="stylesheet" href="css/selectordie.css">
+	<link rel="stylesheet" href="css/selectordie_theme_01.css">
 	<script type="text/javascript">
 		$(document).ready(function(){
 			var is_search = false;
@@ -79,8 +82,6 @@
 					}
 				}
 				
-				
-				
 				order_number.html(order_sum);
 				page_number.html(page);
 				
@@ -150,7 +151,13 @@
 					parent.append(list_item);
 				}
 			}
-			function get_list(page = 0){
+			function get_list(page = 0,callback = null){
+				if(callback == null){
+					callback = function(data){
+						result = data;
+						refresh_list(page);
+					}
+				}
 				$.ajax({
 					type:"POST",
 					data:{
@@ -174,12 +181,41 @@
 					error:function(e){
 						alert(e.responseText);
 					},
-					success:function(data){
-						//console.log(data);
-						result = data;
-						refresh_list(page);
-					}
+					success:callback
 				});
+			}
+			
+			function exportBegin(){
+				$("#btn_show").css("display","none");
+				$("#btn_search").css("display","none");
+				$("#btn_empty").css("display","none");
+				$("#list_head").css("display","none");
+				$("#order_list").css("display","none");
+				$("#list_foot").css("display","none");
+				
+				$("#btn_export").css("display","");
+				$("#search_container").attr("class","");
+				sql_step = "结单";
+			}
+			
+			function exportEnd(){
+				$("#btn_show").css("display","");
+				$("#btn_search").css("display","");
+				$("#btn_empty").css("display","");
+				$("#list_head").css("display","");
+				$("#order_list").css("display","");
+				$("#list_foot").css("display","");
+				
+				$("#id_input").val("");
+				$("#name_input").val("");
+				$("#start_time_start").val("");
+				$("#start_time_end").val("");
+				$("#end_time_start").val("");
+				$("#end_time_end").val("");
+				$("#number_input").val("");
+				
+				$("#btn_export").css("display","none");
+				$("#search_container").attr("class","hidden");
 			}
 			
 			$("#btn_show").click(function(){
@@ -254,6 +290,7 @@
 			});
 			
 			$("#bar_all").click(function(){
+				exportEnd();
 				$(".bar_item").attr("class","bar_item");
 				$("#bar_all").attr("class","bar_item select");
 				sql_step = "";
@@ -261,6 +298,7 @@
 			})
 			
 			$("#bar_finish").click(function(){
+				exportEnd();
 				$(".bar_item").attr("class","bar_item");
 				$("#bar_finish").attr("class","bar_item select");
 				sql_step = "结单";
@@ -268,6 +306,7 @@
 			})
 			
 			$("#bar_unfinish").click(function(){
+				exportEnd();
 				$(".bar_item").attr("class","bar_item");
 				$("#bar_unfinish").attr("class","bar_item select");
 				sql_step = "未结单";
@@ -275,6 +314,7 @@
 			})
 			
 			$("#bar_cancel").click(function(){
+				exportEnd();
 				$(".bar_item").attr("class","bar_item");
 				$("#bar_cancel").attr("class","bar_item select");
 				sql_step = "已撤销";
@@ -282,7 +322,51 @@
 			})
 			
 			$("#bar_export").click(function(){
-				alert("功能尚未完成，敬请期待！");
+				exportBegin();
+			})
+			
+			$("#btn_export").click(function(){
+				get_list(0,function(data){
+					if(data.sum == 0){
+						alert("记录为空！");
+					}else if(confirm("查询到"+data.sum+"条记录，确认导出？")){
+						$.ajax({
+							type:"POST",
+							data:{
+								id:$("#id_input").val(),
+								name:$("#name_input").val(),
+								start_time_start:$("#start_time_start").val(),
+								start_time_end:$("#start_time_end").val(),
+								end_time_start:$("#end_time_start").val(),
+								end_time_end:$("#end_time_end").val(),
+								number:$("#number_input").val(),
+								index:0,
+								limit:data.sum,
+								step:sql_step
+							},
+							url:"./scripts/export.php",
+							dataType: 'json',
+							timeout: 5000,
+							beforeSend:function(){
+								
+							},
+							error:function(e){
+								alert(e.responseText);
+								console.log(e.responseText);
+							},
+							success:function(data){
+								
+								if(data.status == "success"){
+									window.open("files/"+data.fileName);
+								}else{
+									alert(data.error_message);
+									console.log(data.error_message);
+								}
+								
+							}
+						});
+					}
+				})
 			})
 			
 			$("#to_first").click(function(){
@@ -381,7 +465,7 @@
 		#search_container{
 			overflow: hidden;
 			transition: all 0.5s;
-			height: 24vh;
+			height: 29vh;
 		}
 		
 		#search_container.hidden{
@@ -391,7 +475,7 @@
 		.search{
 			display:flex;
 			align-items: center;
-			height: 5vh;
+			height: 6vh;
 			width:80vw;
 		}
 		
@@ -406,13 +490,13 @@
 		
 		.input {
 			display: inline-block;
-			width: 12vw;
-			height: 2.5vh;
-			line-height:2.5vh;
+			width: 20vw;
+			height: 4vh;
+			line-height:4vh;
 			background: #FFFFFF;
 			border: 1px solid #EAEAEA;
-			padding-left:0.2vw;
-			padding-right:0.2vw;
+			padding-left:1vw;
+			padding-right:1vw;
 		}
 		
 		#btn_show{
@@ -443,7 +527,7 @@
 		}
 		
 		#order_list.short{
-			height:52vh;
+			height:47vh;
 		}
 		
 		li{
@@ -505,6 +589,25 @@
 			margin-top:1vh;
 			font-size: 1.2vw;
 			position:relative;
+		}
+		
+		.btn{
+			font-size:20px;
+			margin:2vw;
+			display:flex;
+			justify-content:center;
+			align-items:center;
+			border-radius: 1vh;
+			background:#EA7777;
+			color: #FFFFFF;
+		}
+		
+		.btn:hover{
+			background:#D96666;
+		}
+		
+		.btn:active{
+			background:#C85555;
 		}
 		
 		.btn_img{
@@ -613,6 +716,7 @@
 				<input id="number_input" type="text" class="input" value=""/>
 			</div>
 		</div>
+		<div id="btn_export" style="display:none" class="btn">导出</div>
 		<img id="btn_show" class="btn_img" src="img/show.png"/>
 		<img id="btn_search" class="btn_img hidden" src="img/search.png"/>
 		<img id="btn_empty" class="btn_img hidden" src="img/empty.png"/>

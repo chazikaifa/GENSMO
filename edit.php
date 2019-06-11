@@ -34,8 +34,15 @@
 				$("#trouble_parent").empty();
 				$("#trouble_parent").append("<select id=\"trouble_reason\"><option value=\"\">请选择</option></select>");
 				if (trouble_class == "动力配套") {
-					$("#trouble_reason").append("<option value=\"电力系统\">电力系统</option>");
-					$("#trouble_reason").append("<option value=\"制冷系统\">制冷系统</option>");
+					$("#trouble_reason").append("<option value=\"机房停电\">机房停电</option>");
+					$("#trouble_reason").append("<option value=\"机房电池\">机房电池</option>");
+					$("#trouble_reason").append("<option value=\"机房空调\">机房空调</option>");
+					$("#trouble_reason").append("<option value=\"基站停电\">基站停电</option>");
+					$("#trouble_reason").append("<option value=\"基站电池\">基站电池</option>");
+					$("#trouble_reason").append("<option value=\"基站空调\">基站空调</option>");
+					$("#trouble_reason").append("<option value=\"室分停电\">室分停电</option>");
+					$("#trouble_reason").append("<option value=\"室分电池\">室分电池</option>");
+					$("#trouble_reason").append("<option value=\"室分空调\">室分空调</option>");
 				} else if (trouble_class == "设备故障") {
 					$("#trouble_reason").append("<option value=\"传输设备\">传输设备</option>");
 					$("#trouble_reason").append("<option value=\"交换设备\">交换设备</option>");
@@ -612,7 +619,7 @@
 		.process_content{
 			min-height:25px;
 			display:inline-block;
-			width:40.9vw;
+			width:43.4vw;
 			margin-left:0.5vw;
 			font-size:20px;
 			height:fit-content;
@@ -622,10 +629,6 @@
 			padding-bottom:5px;
 			border-left: 1px #AAAAAA solid;
 			word-wrap:break-word;
-		}
-		
-		.process_content.long{
-			width:42.9vw;
 		}
 		
 		.process_content:hover{
