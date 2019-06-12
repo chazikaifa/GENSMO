@@ -151,6 +151,11 @@
 			}
 			
 			function new_order(){
+				for(let i=0;i<processList.length;i++){
+					if(processList[i] == ""){
+						processList.splice(i--,1);
+					}
+				}
 				let process = "";
 				if(processList.length == 1){
 					process = processList[0];
@@ -206,6 +211,11 @@
 			}
 			
 			function update_order(){
+				for(let i=0;i<processList.length;i++){
+					if(processList[i] == ""){
+						processList.splice(i--,1);
+					}
+				}
 				let process = "";
 				if(processList.length == 1){
 					process = processList[0];
