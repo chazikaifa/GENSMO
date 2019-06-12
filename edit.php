@@ -149,7 +149,118 @@
 					});
 				}
 			}
-
+			
+			function new_order(){
+				let process = "";
+				if(processList.length == 1){
+					process = processList[0];
+				}else{
+					for(let i=0;i<processList.length-1;i++){
+						process = process + processList[i] + "[step]";
+					}
+					process = process + processList[processList.length - 1];
+				}
+				$.ajax({
+					type: "POST",
+					data: {
+						name: $("#name").val(),
+						start_time: $("#start_time").val(),
+						end_time: $("#end_time").val(),
+						time: $("#time").val(),
+						step: $("#step").val(),
+						trouble_symptom: $("#trouble_symptom").val(),
+						link_id: $("#link_id").val(),
+						process: process,
+						circuit_number: $("#circuit_number").val(),
+						contact_number: $("#contact_number").val(),
+						contact_name: $("#contact_name").val(),
+						area: $("#area").val(),
+						is_trouble: $("#is_trouble").val(),
+						is_remote: $("#is_remote").val(),
+						trouble_class: $("#trouble_class").val(),
+						trouble_reason: $("#trouble_reason").val(),
+						business_type: $("#business_type").val(),
+						remark: $("#remark").val(),
+					},
+					url: "./scripts/new.php",
+					timeout: 5000,
+					beforeSend: function () {
+						canJump = false;
+					},
+					error: function (e) {
+						alert(e.responseText);
+						canJump = true;
+					},
+					success: function (data) {
+						if (data == "success") {
+							$("#btn_confirm").html("新建成功！");
+							setTimeout(function () {
+								window.location.href = "index.php";
+							}, 1000);
+						} else {
+							canJump = true;
+							alert(data);
+						}
+					}
+				});
+			}
+			
+			function update_order(){
+				let process = "";
+				if(processList.length == 1){
+					process = processList[0];
+				}else{
+					for(let i=0;i<processList.length-1;i++){
+						process = process + processList[i] + "[step]";
+					}
+					process = process + processList[processList.length - 1];
+				}
+				$.ajax({
+					type: "POST",
+					data: {
+						id: $("#id").val(),
+						name: $("#name").val(),
+						start_time: $("#start_time").val(),
+						end_time: $("#end_time").val(),
+						time: $("#time").val(),
+						step: $("#step").val(),
+						trouble_symptom: $("#trouble_symptom").val(),
+						link_id: $("#link_id").val(),
+						process: process,
+						circuit_number: $("#circuit_number").val(),
+						contact_number: $("#contact_number").val(),
+						contact_name: $("#contact_name").val(),
+						area: $("#area").val(),
+						is_trouble: $("#is_trouble").val(),
+						is_remote: $("#is_remote").val(),
+						trouble_class: $("#trouble_class").val(),
+						trouble_reason: $("#trouble_reason").val(),
+						business_type: $("#business_type").val(),
+						remark: $("#remark").val(),
+					},
+					url: "./scripts/update.php",
+					timeout: 5000,
+					beforeSend: function () {
+						canJump = false;
+					},
+					error: function (e) {
+						alert(e.responseText);
+						canJump = true;
+					},
+					success: function (data) {
+						if (data == "success") {
+							$("#btn_confirm").html("更新成功！");
+							setTimeout(function () {
+								window.location.replace("index.php");
+							}, 1000);
+						} else {
+							canJump = true;
+							alert(data);
+						}
+					}
+				});
+			}
+			
 			$('textarea').each(function () {
 				this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
 			}).on('input', function () {
@@ -308,120 +419,34 @@
 					if ($("#id").val() == "") {
 						//new
 						if (canJump == true) {
-							let process = "";
-							if(processList.length == 1){
-								process = processList[0];
-							}else{
-								for(let i=0;i<processList.length-1;i++){
-									process = process + processList[i] + "[step]";
-								}
-								process = process + processList[processList.length - 1];
-							}
-							$.ajax({
-								type: "POST",
-								data: {
-									name: $("#name").val(),
-									start_time: $("#start_time").val(),
-									end_time: $("#end_time").val(),
-									time: $("#time").val(),
-									step: $("#step").val(),
-									trouble_symptom: $("#trouble_symptom").val(),
-									link_id: $("#link_id").val(),
-									process: process,
-									circuit_number: $("#circuit_number").val(),
-									contact_number: $("#contact_number").val(),
-									contact_name: $("#contact_name").val(),
-									area: $("#area").val(),
-									is_trouble: $("#is_trouble").val(),
-									is_remote: $("#is_remote").val(),
-									trouble_class: $("#trouble_class").val(),
-									trouble_reason: $("#trouble_reason").val(),
-									business_type: $("#business_type").val(),
-									remark: $("#remark").val(),
-								},
-								url: "./scripts/new.php",
-								timeout: 5000,
-								beforeSend: function () {
-									canJump = false;
-								},
-								error: function (e) {
-									alert(e.responseText);
-									canJump = true;
-								},
-								success: function (data) {
-									if (data == "success") {
-										$("#btn_confirm").html("新建成功！");
-										setTimeout(function () {
-											window.location.href = "index.php";
-										}, 1000);
-									} else {
-										canJump = true;
-										alert(data);
-									}
-								}
-							});
+							new_order();
 						}
 					} else {
 						//view
 						if (GetQueryString("view") == "true") {
 							window.location.replace("edit.php?id=" + $("#id").val());
-						} else if ($("#step").val() == "结单" && $("#end_time").val() == "") {
-							alert("请输入恢复时间！");
-						} else if (canJump == true) {
-							//update
-							let process = "";
-							if(processList.length == 1){
-								process = processList[0];
-							}else{
-								for(let i=0;i<processList.length-1;i++){
-									process = process + processList[i] + "[step]";
-								}
-								process = process + processList[processList.length - 1];
+						} else if ($("#step").val() == "结单") {
+							if($("#end_time").val() == ""){
+								alert("请输入恢复时间！");
+							}else if($("#area").val() == ""){
+								alert("请选择客户区域！")
+							}else if($("#is_trouble").val() == ""){
+								alert("请选择是否故障！")
+							}else if($("#is_remote").val() == ""){
+								alert("请选择是否对端！")
+							}else if($("#trouble_class").val() == ""){
+								alert("请选择故障分类！")
+							}else if($("#trouble_reason").val() == ""){
+								alert("请选择原因细化！")
+							}else if($("#business_type").val() == ""){
+								alert("请选择行业类型！")
+							}else if (canJump == true) {
+								//update
+								update_order();
 							}
-							$.ajax({
-								type: "POST",
-								data: {
-									id: $("#id").val(),
-									name: $("#name").val(),
-									start_time: $("#start_time").val(),
-									end_time: $("#end_time").val(),
-									time: $("#time").val(),
-									step: $("#step").val(),
-									trouble_symptom: $("#trouble_symptom").val(),
-									link_id: $("#link_id").val(),
-									process: process,
-									circuit_number: $("#circuit_number").val(),
-									contact_number: $("#contact_number").val(),
-									contact_name: $("#contact_name").val(),
-									area: $("#area").val(),
-									is_trouble: $("#is_trouble").val(),
-									is_remote: $("#is_remote").val(),
-									trouble_class: $("#trouble_class").val(),
-									trouble_reason: $("#trouble_reason").val(),
-									business_type: $("#business_type").val(),
-									remark: $("#remark").val(),
-								},
-								url: "./scripts/update.php",
-								timeout: 5000,
-								beforeSend: function () {
-									canJump = false;
-								},
-								error: function (e) {
-									alert(e.responseText);
-									canJump = true;
-								},
-								success: function (data) {
-									if (data == "success") {
-										$("#btn_confirm").html("更新成功！");
-										setTimeout(function () {
-											window.location.replace("index.php");
-										}, 1000);
-									} else {
-										canJump = true;
-										alert(data);
-									}
-								}
-							});
+						} else if(canJump == true){
+							//update
+							update_order();
 						}
 					}
 				}

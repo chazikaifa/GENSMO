@@ -105,13 +105,38 @@ if(!$result){
 			$sheet->setCellValueByColumnAndRow(6,$i, $row['step']);
 			$sheet->setCellValueByColumnAndRow(7,$i, $row['trouble_symptom']);
 			$sheet->setCellValueByColumnAndRow(8,$i, $row['link_id']);
-			$sheet->setCellValueByColumnAndRow(9,$i, $row['process']);
+			
+			$steps = explode('[step]',$row['process']);
+			$process = '';
+			for($n=1;$n<count($steps)+1;$n++){
+				if($steps[$n-1]!=""){
+					$process .= $n."、".$steps[$n-1];
+				}else{
+					array_splice($steps,$n-1);
+					$n -= 1;
+				}
+			}
+			$sheet->setCellValueByColumnAndRow(9,$i, $process);
+			
 			$sheet->setCellValueByColumnAndRow(10,$i, $row['circuit_number']);
 			$sheet->setCellValueByColumnAndRow(11,$i, $row['contact_number']);
 			$sheet->setCellValueByColumnAndRow(12,$i, $row['contact_name']);
 			$sheet->setCellValueByColumnAndRow(13,$i, $row['area']);
-			$sheet->setCellValueByColumnAndRow(14,$i, $row['is_trouble']);
-			$sheet->setCellValueByColumnAndRow(15,$i, $row['is_remote']);
+			
+			if($row['is_trouble'] == 0){
+				$is_trouble = '否';
+			}else{
+				$is_trouble = '是';
+			}
+			$sheet->setCellValueByColumnAndRow(14,$i, $is_trouble);
+			
+			if($row['is_remote'] == 0){
+				$is_remote = '否';
+			}else{
+				$is_remote = '是';
+			}
+			$sheet->setCellValueByColumnAndRow(15,$i, $is_remote);
+			
 			$sheet->setCellValueByColumnAndRow(16,$i, $row['trouble_class']);
 			$sheet->setCellValueByColumnAndRow(17,$i, $row['trouble_reason']);
 			$sheet->setCellValueByColumnAndRow(18,$i, $row['business_type']);

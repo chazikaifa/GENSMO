@@ -106,9 +106,9 @@
 					list_item.attr("id","order_" + (parseInt(x)+1));
 					order_index.html(parseInt(x)+1);
 					id.html(order_list[x].id);
-					id.click(function(){
-						window.location.href = "edit.php?id="+id.html()+"&view=true";
-					})
+					// id.click(function(){
+						// window.location.href = "edit.php?id="+id.html()+"&view=true";
+					// })
 					name.html(order_list[x].name);
 					circuit_number.html(order_list[x].circuit_number);
 					trouble_symptom.html(order_list[x].trouble_symptom);
@@ -323,9 +323,15 @@
 			
 			$("#bar_export").click(function(){
 				exportBegin();
+				$(".bar_item").attr("class","bar_item");
+				$("#bar_export").attr("class","bar_item select");
 			})
 			
 			$("#btn_export").click(function(){
+				if($("#start_time_start").val() == "" && $("#start_time_end").val()== "" && $("#end_time_start").val() == "" && $("#end_time_end").val() == ""){
+					alert("请至少选择一个时间！");
+					return;
+				}
 				get_list(0,function(data){
 					if(data.sum == 0){
 						alert("记录为空！");
