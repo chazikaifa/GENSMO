@@ -12,9 +12,12 @@
 		$(document).ready(function () {
 			var canJump = true;
 			var processList = new Array();
+			var suspendList = new Array();
 			var show_template = $("#show_template").clone();
 			var edit_template = $("#edit_template").clone();
 			var add_template = $("#add_template").clone();
+			var suspend_template = $("#suspend_template").clone();
+			var btn_add_suspend = $("#add_suspend").clone();
 			var textarea_template = $("#textarea_template").clone();
 			var div_template = $("#div_template").clone();
 			function adjust_textarea(obj) {
@@ -165,6 +168,17 @@
 					}
 					process = process + processList[processList.length - 1];
 				}
+				if($("#end_time").val() != "" && is_suspend($("#end_time").val())){
+					alert("工单挂起中！请修改结单时间或挂起时间！");
+					return;
+				}
+				if(!is_suspend_available()){
+					alert("挂起状态有误！请检查：\n1、挂起开始时间与结束时间都不能为空\n2、挂起结束时间应在开始时间之后\n3、后一条的挂起开始时间应在前一天挂起结束时间之后");
+					return;
+				}
+				
+				update_suspend();
+				
 				$.ajax({
 					type: "POST",
 					data: {
@@ -225,6 +239,17 @@
 					}
 					process = process + processList[processList.length - 1];
 				}
+				if($("#end_time").val() != "" && is_suspend($("#end_time").val())){
+					alert("工单挂起中！请修改结单时间或挂起时间！");
+					return;
+				}
+				if(!is_suspend_available()){
+					alert("挂起状态有误！请检查：\n1、挂起开始时间与结束时间都不能为空\n2、挂起结束时间应在开始时间之后\n3、后一条的挂起开始时间应在前一天挂起结束时间之后");
+					return;
+				}
+				
+				update_suspend();
+				
 				$.ajax({
 					type: "POST",
 					data: {
@@ -271,6 +296,181 @@
 				});
 			}
 			
+			function refresh_suspend(){
+				$("#suspend_list").empty();
+				for(x in suspendList){
+					let template = suspend_template.clone();
+					let start_time = template.find("#st");
+					let end_time = template.find("#et");
+					let btn_minus = template.find("#btn_minus");
+					template.attr("id","suspend"+(parseInt(x)+1));
+					template.attr("index",x);
+					start_time.val(suspendList[x].start_time);
+					end_time.val(suspendList[x].end_time);
+					
+					start_time.jeDate({
+						format: "YYYY-MM-DD hh:mm:ss",
+						skinCell: "jedatered",
+						choosefun: function (elem, datas) {
+							suspendList[parseInt(template.attr("index"))].start_time = datas;
+						},
+						okfun: function (elem, datas) {
+							suspendList[parseInt(template.attr("index"))].start_time = datas;
+						}
+					});
+					
+					end_time.jeDate({
+						format: "YYYY-MM-DD hh:mm:ss",
+						skinCell: "jedatered",
+						choosefun: function (elem, datas) {
+							suspendList[parseInt(template.attr("index"))].end_time = datas;
+						},
+						okfun: function (elem, datas) {
+							suspendList[parseInt(template.attr("index"))].end_time = datas;
+						}
+					});
+					
+					if (GetQueryString("view") != "true") {
+						btn_minus.click(function () {
+							if (confirm("确定删除这一条挂起？")) {
+								suspendList.splice(parseInt(template.attr("index")), 1);
+								//console.log(suspendList);
+								refresh_suspend();
+							}
+						});
+					}else{
+						btn_minus.attr("style","display:none");
+					}
+					
+					$("#suspend_list").append(template);
+				}
+				if (GetQueryString("view") != "true" && GetQueryString("id")!= null ) {
+					let btn_add = btn_add_suspend.clone();
+					btn_add.click(function(){
+						suspendList.push({
+							order_id:$("#id").val(),
+							suspend_id: 'NEW_ID',
+							start_time: '',
+							end_time: ''
+						});
+						refresh_suspend();
+					})
+					$("#suspend_list").append(btn_add);
+				}
+			}
+			
+			function get_suspend(){
+				$.ajax({
+					type: "POST",
+					dataType: 'json',
+					data: {
+						order_id: GetQueryString("id"),
+					},
+					url: "./scripts/get_suspend_list_by_order_id.php",
+					timeout: 5000,
+					beforeSend: function () {
+						canJump = false;
+					},
+					error: function (e) {
+						alert(e.responseText);
+						canJump = true;
+					},
+					success: function (data) {
+						canJump = true;
+						if (data.status == "success") {
+							suspendList = data.result;
+							//console.log(suspendList);
+							refresh_suspend();
+						} else {
+							alert(data.error_message);
+						}
+					}
+				});
+			}
+			
+			function is_suspend(time){
+				let flag = false;
+				let now = new Date(time).getTime();
+				for(x in suspendList){
+					let start = new Date(suspendList[x].start_time).getTime();
+					let end = new Date(suspendList[x].end_time).getTime();
+					if(now > start && now < end){
+						flag = true;
+					}
+				}
+				return flag;
+			}
+			
+			function is_suspend_available(){
+				let last_time = 0;
+				for(x in suspendList){
+					if(suspendList[x].start_time == "" || suspendList[x].end_time == ""){
+						return false;
+					}else {
+						let start = new Date(suspendList[x].start_time).getTime();
+						let end = new Date(suspendList[x].end_time).getTime();
+						if(start > end){
+							return false;
+						}
+						if(start < last_time){
+							return false;
+						}
+						last_time = end;
+					}
+				}
+				return true;
+			}
+			
+			function delete_suspend(callback = console.log){
+				$.ajax({
+					type: "POST",
+					data: {
+						order_id: $("#id").val(),
+					},
+					url: "./scripts/delete_suspend_by_order_id.php",
+					timeout: 5000,
+					beforeSend: function () {
+					},
+					error: function (e) {
+						alert(e.responseText);
+					},
+					success: callback
+				});
+			}
+			
+			function add_suspend(suspend,callback = console.log){
+				$.ajax({
+					type: "POST",
+					data: {
+						suspend_id: suspend.suspend_id,
+						order_id: suspend.order_id,
+						start_time: suspend.start_time,
+						end_time: suspend.end_time,
+						description: suspend.description
+					},
+					url: "./scripts/add_suspend.php",
+					timeout: 5000,
+					beforeSend: function () {
+					},
+					error: function (e) {
+						alert(e.responseText);
+					},
+					success: callback
+				});
+			}
+			
+			function update_suspend(){
+				delete_suspend(function(data){
+					for(x in suspendList){
+						add_suspend(suspendList[x],function(data){
+							//console.log(data);
+						});
+					}
+				});
+			}
+			
+			get_suspend();
+			
 			$('textarea').each(function () {
 				this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
 			}).on('input', function () {
@@ -310,6 +510,9 @@
 						//console.log(datas)
 					}
 				});
+				
+				//新建工单时无工单id，不能创建挂起
+				$("#suspend_container").css("display","none");
 				
 				processList[0] = "";
 				refresh_process_list();
@@ -413,7 +616,6 @@
 						}
 					}
 				});
-
 			}
 
 			$("#btn_cancel").click(function () {
@@ -674,6 +876,32 @@
 			background:#D9D9D9;
 		}
 		
+		#suspend_list{
+			margin: 0;
+			padding: 0;
+			width:47.4vw;
+			height:fit-content;
+		}	
+		
+		#suspend_template{
+			display:none;
+		}
+		
+		.suspend_item{
+			list-style:none;
+			height:auto;
+			width:-webkit-fill-available;
+			display:flex;
+			align-items:center;
+			margin-top:10px;
+		}
+		
+		.suspend_step{
+			margin: 1vw;
+			width: 21vw;
+			height: 30px;
+		}
+		
 		.btn_img:active{
 			background: #D96666;
 		}
@@ -877,6 +1105,23 @@
 							添加进展
 						</li>
 					</ul>
+				</div>
+			</div>
+			<div class="item textarea" id="suspend_container">
+				<div class="key">挂起情况</div>
+				<div class="value textarea">
+					<ul id="suspend_list">
+						<li id="suspend_template" class="suspend_item">
+							<div class="key">从</div>
+							<input id="st" class="suspend_step" type="text" value="" readonly />
+							<div class="key">到</div>
+							<input id="et" class="suspend_step" type="text" value="" readonly />
+							<img id="btn_minus" class="btn_img" src="img/minus.png"/>
+						</li>
+						<li id="add_suspend" class="process_item add">
+							添加挂起
+						</li>
+					<ul>
 				</div>
 			</div>
 			<div class="item textarea">
