@@ -26,8 +26,15 @@
 			}
 
 			function cal_time(end_time) {
+				let suspend_time = 0;
+				for(x in suspendList){
+					if(suspendList[x].start_time != "" && suspendList[x].end_time != ""){
+						suspend_time = suspend_time + new Date(suspendList[x].end_time).getTime() - new Date(suspendList[x].start_time).getTime();
+					}
+				}
+				console.log(suspend_time);
 				if (end_time != "") {
-					let offset = new Date(end_time).getTime() - new Date($("#start_time").val()).getTime();
+					let offset = new Date(end_time).getTime() - new Date($("#start_time").val()).getTime() - suspend_time;
 					offset = offset / 1000 / 60;
 					$("#time").val(offset.toFixed(2));
 				}
@@ -313,9 +320,11 @@
 						skinCell: "jedatered",
 						choosefun: function (elem, datas) {
 							suspendList[parseInt(template.attr("index"))].start_time = datas;
+							cal_time($("#end_time").val());
 						},
 						okfun: function (elem, datas) {
 							suspendList[parseInt(template.attr("index"))].start_time = datas;
+							cal_time($("#end_time").val());
 						}
 					});
 					
@@ -324,9 +333,11 @@
 						skinCell: "jedatered",
 						choosefun: function (elem, datas) {
 							suspendList[parseInt(template.attr("index"))].end_time = datas;
+							cal_time($("#end_time").val());
 						},
 						okfun: function (elem, datas) {
 							suspendList[parseInt(template.attr("index"))].end_time = datas;
+							cal_time($("#end_time").val());
 						}
 					});
 					
@@ -334,6 +345,7 @@
 						btn_minus.click(function () {
 							if (confirm("确定删除这一条挂起？")) {
 								suspendList.splice(parseInt(template.attr("index")), 1);
+								cal_time($("#end_time").val());
 								//console.log(suspendList);
 								refresh_suspend();
 							}
@@ -612,7 +624,7 @@
 							}
 
 						} else {
-							alert("未知错误！")
+							alert("接口错误！")
 						}
 					}
 				});
