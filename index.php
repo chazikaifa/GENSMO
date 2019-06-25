@@ -140,7 +140,26 @@
 								},
 								success:function(data){
 									if(data == "success"){
-										location.reload();
+										$.ajax({
+											type: "POST",
+											data: {
+												order_id: id.html(),
+											},
+											url: "./scripts/delete_suspend_by_order_id.php",
+											timeout: 5000,
+											beforeSend: function () {
+											},
+											error: function (e) {
+												alert(e.responseText);
+											},
+											success: function(data){
+												if(data == "success"){
+													location.reload();
+												}else{
+													alert(data);
+												}
+											}
+										});
 									}else{
 										alert(data);
 									}
@@ -634,7 +653,7 @@
 			height: 6vh;
 			line-height: 6vh;
 			text-align:center;
-			font-size:1vw;
+			font-size:0.5vw;
 			overflow:hidden;
 		}
 		.item.index{

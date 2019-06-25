@@ -167,6 +167,9 @@
 					}
 				}
 				let process = "";
+				if(processList.length <= 0){
+					processList[0] = "";
+				}
 				if(processList.length == 1){
 					process = processList[0];
 				}else{
@@ -238,6 +241,9 @@
 					}
 				}
 				let process = "";
+				if(processList.length <= 0){
+					processList[0] = "";
+				}
 				if(processList.length == 1){
 					process = processList[0];
 				}else{
