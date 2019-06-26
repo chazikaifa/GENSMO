@@ -237,65 +237,6 @@
 				$("#search_container").attr("class","hidden");
 			}
 			
-			function get_suspend_list(){
-				$("#limit").val(result.sum);
-				get_list(0,function(data){
-					let order_list = data.result;
-					if(order_list.length == 0){
-						return;
-					}
-					let sum = order_list.length;
-					let complete = 0;
-					let now = new Date().getTime();
-					for(x in order_list){
-						let id = order_list[x].id;
-						let index = x;
-						$.ajax({
-							type:"POST",
-							data:{
-								order_id:id,
-							},
-							url:"./scripts/get_suspend_list_by_order_id.php",
-							dataType: 'json',
-							timeout: 5000,
-							beforeSend:function(){
-								
-							},
-							error:function(e){
-								alert(e.responseText);
-							},
-							success:function(data){
-								let suspendList = data.result;
-								let flag = false;
-								for(i in suspendList){
-									let start = new Date(suspendList[i].start_time).getTime();
-									let end = new Date(suspendList[i].end_time).getTime();
-									if(start < now && now < end){
-										flag = true;
-										break;
-									}
-								}
-								if(!flag){
-									delete order_list[index];
-								}
-								complete++;
-								if(complete >= sum){
-									for(let y=0;y<order_list.length;y++){
-										if(order_list[y] == undefined){
-											order_list.splice(y--,1);
-										}
-									}
-									result.result = order_list;
-									result.sum = order_list.length;
-									refresh_list(0);
-								}
-							}
-						});
-					}
-				});
-				
-			}
-			
 			$("#btn_show").click(function(){
 				if(is_search){
 					$("#search_container").attr("class","hidden");
@@ -395,11 +336,8 @@
 				exportEnd();
 				$(".bar_item").attr("class","bar_item");
 				$("#bar_suspend").attr("class","bar_item select");
-				sql_step = "未结单";
-				get_list(0,function(data){
-					result = data;
-					get_suspend_list();
-				});
+				sql_step = "挂起中";
+				get_list();
 			})
 			
 			$("#bar_cancel").click(function(){

@@ -17,7 +17,7 @@ if(! $conn ){
 mysqli_query($conn , "set names utf8");
 mysqli_select_db($conn,'GENSMO');
 
-$sql = 'SELECT  * FROM `suspend` WHERE `order_id` LIKE \''.$id.'\' ORDER BY `start_time` ASC' ;
+$sql = 'SELECT  * FROM `process` WHERE `order_id` LIKE \''.$id.'\' ORDER BY `list_order` ASC' ;
 //exit($sql);
 $result = mysqli_query($conn, $sql);
 if(!$result){

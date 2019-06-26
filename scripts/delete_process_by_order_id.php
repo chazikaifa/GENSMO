@@ -1,8 +1,8 @@
 <?php
 header("Content-Type: text/html;charset=utf-8");
 
-if(isset($_POST['suspend_id'])){
-	$id = $_POST['suspend_id'];
+if(isset($_POST['order_id'])){
+	$id = $_POST['order_id'];
 }else{
 	die("id is NOT set!");
 }
@@ -18,7 +18,7 @@ if(! $conn )
 mysqli_query($conn , "set names utf8");
 mysqli_select_db($conn,'GENSMO');
 
-$sql = "DELETE FROM `suspend` WHERE `suspend_id` = '$id'";
+$sql = "DELETE FROM `process` WHERE `order_id` = '$id'";
 $result = mysqli_query($conn, $sql);
 if(!$result){
 	die('error:'.mysqli_error($conn));

@@ -14,8 +14,8 @@ $start_time_end = $_POST['start_time_end'];
 $end_time_start = $_POST['end_time_start'];
 $end_time_end = $_POST['end_time_end'];
 $number = $_POST['number'];
-$index = $_POST['index'];
-$limit = $_POST['limit'];
+// $index = $_POST['index'];
+// $limit = $_POST['limit'];
 if(isset($_POST['step'])){
 	$step = $_POST['step'];
 }else{
@@ -61,7 +61,7 @@ if($condition != ""){
 	$condition = substr($condition,0,strlen($condition)-4);
 	$condition = "WHERE ".$condition;
 }
-$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `create_time` DESC LIMIT '.$index.','.$limit ;
+$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `create_time` DESC ' ;
 //exit($sql);
 $result = mysqli_query($conn, $sql);
 if(!$result){
@@ -106,16 +106,34 @@ if(!$result){
 			$sheet->setCellValueByColumnAndRow(7,$i, $row['trouble_symptom']);
 			$sheet->setCellValueByColumnAndRow(8,$i, $row['link_id']);
 			
-			$steps = explode('[step]',$row['process']);
 			$process = '';
-			for($n=1;$n<count($steps)+1;$n++){
-				if($steps[$n-1]!=""){
-					$process .= $n."、".$steps[$n-1];
-				}else{
-					array_splice($steps,$n-1);
-					$n -= 1;
+			
+			$conn_p = mysqli_connect($dbhost, $dbuser, $dbpass);
+			mysqli_query($conn_p , "set names utf8");
+			mysqli_select_db($conn_p,'GENSMO');
+			$row_id = $row['id'];
+			$sql_p = "SELECT * FROM `process` WHERE `order_id` LIKE '$row_id' ORDER BY `list_order` ASC";
+			$result_p = mysqli_query($conn_p, $sql_p);
+			$index_p = 1;
+			while($row_p = mysqli_fetch_array($result_p,MYSQLI_ASSOC)){
+				switch($row_p['mark']){
+					case "set_suspend":
+						$mark = "[挂起]";
+						break;
+					case "unset_suspend":
+						$mark = "[解挂]";
+						break;
+					case "":
+						$mark = "[进展]";
+						break;
+					default:
+						$mark = "[进展]";
+						break;
 				}
+				$process .= $index_p."、".$row_p['time']." ".$mark." ".$row_p['description']."\n"; 
 			}
+			mysqli_close($conn_p);
+			
 			$sheet->setCellValueByColumnAndRow(9,$i, $process);
 			
 			$sheet->setCellValueByColumnAndRow(10,$i, $row['circuit_number']);
