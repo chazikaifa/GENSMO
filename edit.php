@@ -149,15 +149,19 @@
 			
 			function refresh_process_list(){
 				$("#process_list").empty();
-				if(processList.length <= 0){
-					processList[0] = {
-						process_id: 'new_process',
-						order_id: $("#id").val(),
-						description: '',
-						list_order: 0,
-						time: ""
-					};
-				}
+				// if(processList.length <= 0){
+					// if(GetQueryString("view")!="true"){
+						// processList[0] = {
+							// process_id: 'new_process',
+							// order_id: $("#id").val(),
+							// description: '',
+							// list_order: 0,
+							// time: ""
+						// };
+					// }else{
+						
+					// }
+				// }
 				for (x in processList) {
 					let template = show_template.clone();
 					let show_index = template.find("#index");
@@ -389,73 +393,122 @@
 			}
 			
 			function update_order(){
-				if(!is_suspend_available()){
-					alert("不合理的故障过程，请检查：\n1、进展时间不能为空\n2、后一条进展时间应比前一条进展晚\n3、挂起、解挂标志不能互相嵌套（即在解挂前不能进行挂起）");
-					return;
-				}else if(processList.length > 0 && $("#end_time").val() != "" && new Date(processList[processList.length-1].time).getTime() - new Date($("#end_time").val()).getTime() > 0){
-					alert("错误！结单时间比最后一条进展的时间早！");
-					return;
-				}else if(get_suspend_time() == -1 && $("#step").val() != "挂起中"){
-					if(confirm("工单状态应为'挂起中',是否自动修改？")){
-						$("#step").val("挂起中");
-						$("#step").selectOrDie("update");
-					}else{
+				if(processList.length > 0){
+					if(!is_suspend_available()){
+						alert("不合理的故障过程，请检查：\n1、进展时间不能为空\n2、后一条进展时间应比前一条进展晚\n3、挂起、解挂标志不能互相嵌套（即在解挂前不能进行挂起）");
 						return;
-					}
-				}else if(get_suspend_time() != -1 && $("#step").val() == "挂起中"){
-					if(confirm("工单当前并无挂起,是否自动修改为'未结单'？")){
-						$("#step").val("未结单");
-						$("#step").selectOrDie("update");
-					}else{
+					}else if(processList.length > 0 && $("#end_time").val() != "" && new Date(processList[processList.length-1].time).getTime() - new Date($("#end_time").val()).getTime() > 0){
+						alert("错误！结单时间比最后一条进展的时间早！");
 						return;
-					}
-				}
-				update_process(function(){
-					$.ajax({
-						type: "POST",
-						data: {
-							id: $("#id").val(),
-							name: $("#name").val(),
-							start_time: $("#start_time").val(),
-							end_time: $("#end_time").val(),
-							time: $("#time").val(),
-							step: $("#step").val(),
-							trouble_symptom: $("#trouble_symptom").val(),
-							link_id: $("#link_id").val(),
-							process: "该字段已弃用",
-							circuit_number: $("#circuit_number").val(),
-							contact_number: $("#contact_number").val(),
-							contact_name: $("#contact_name").val(),
-							area: $("#area").val(),
-							is_trouble: $("#is_trouble").val(),
-							is_remote: $("#is_remote").val(),
-							trouble_class: $("#trouble_class").val(),
-							trouble_reason: $("#trouble_reason").val(),
-							business_type: $("#business_type").val(),
-							remark: $("#remark").val(),
-						},
-						url: "./scripts/update.php",
-						timeout: 5000,
-						beforeSend: function () {
-							canJump = false;
-						},
-						error: function (e) {
-							alert(e.responseText);
-							canJump = true;
-						},
-						success: function (data) {
-							if (data == "success") {
-								$("#btn_confirm").html("更新成功！");
-								setTimeout(function () {
-									window.location.replace("index.php");
-								}, 1000);
-							} else {
-								canJump = true;
-								alert(data);
-							}
+					}else if(get_suspend_time() == -1 && $("#step").val() != "挂起中"){
+						if(confirm("工单状态应为'挂起中',是否自动修改？")){
+							$("#step").val("挂起中");
+							$("#step").selectOrDie("update");
+						}else{
+							return;
 						}
+					}else if(get_suspend_time() != -1 && $("#step").val() == "挂起中"){
+						if(confirm("工单当前并无挂起,是否自动修改为'未结单'？")){
+							$("#step").val("未结单");
+							$("#step").selectOrDie("update");
+						}else{
+							return;
+						}
+					}
+					update_process(function(){
+						$.ajax({
+							type: "POST",
+							data: {
+								id: $("#id").val(),
+								name: $("#name").val(),
+								start_time: $("#start_time").val(),
+								end_time: $("#end_time").val(),
+								time: $("#time").val(),
+								step: $("#step").val(),
+								trouble_symptom: $("#trouble_symptom").val(),
+								link_id: $("#link_id").val(),
+								process: "该字段已弃用",
+								circuit_number: $("#circuit_number").val(),
+								contact_number: $("#contact_number").val(),
+								contact_name: $("#contact_name").val(),
+								area: $("#area").val(),
+								is_trouble: $("#is_trouble").val(),
+								is_remote: $("#is_remote").val(),
+								trouble_class: $("#trouble_class").val(),
+								trouble_reason: $("#trouble_reason").val(),
+								business_type: $("#business_type").val(),
+								remark: $("#remark").val(),
+							},
+							url: "./scripts/update.php",
+							timeout: 5000,
+							beforeSend: function () {
+								canJump = false;
+							},
+							error: function (e) {
+								alert(e.responseText);
+								canJump = true;
+							},
+							success: function (data) {
+								if (data == "success") {
+									$("#btn_confirm").html("更新成功！");
+									setTimeout(function () {
+										window.location.replace("index.php");
+									}, 1000);
+								} else {
+									canJump = true;
+									alert(data);
+								}
+							}
+						});
 					});
-				});
+				}else{
+					delete_process(function(){
+						$.ajax({
+							type: "POST",
+							data: {
+								id: $("#id").val(),
+								name: $("#name").val(),
+								start_time: $("#start_time").val(),
+								end_time: $("#end_time").val(),
+								time: $("#time").val(),
+								step: $("#step").val(),
+								trouble_symptom: $("#trouble_symptom").val(),
+								link_id: $("#link_id").val(),
+								process: "该字段已弃用",
+								circuit_number: $("#circuit_number").val(),
+								contact_number: $("#contact_number").val(),
+								contact_name: $("#contact_name").val(),
+								area: $("#area").val(),
+								is_trouble: $("#is_trouble").val(),
+								is_remote: $("#is_remote").val(),
+								trouble_class: $("#trouble_class").val(),
+								trouble_reason: $("#trouble_reason").val(),
+								business_type: $("#business_type").val(),
+								remark: $("#remark").val(),
+							},
+							url: "./scripts/update.php",
+							timeout: 5000,
+							beforeSend: function () {
+								canJump = false;
+							},
+							error: function (e) {
+								alert(e.responseText);
+								canJump = true;
+							},
+							success: function (data) {
+								if (data == "success") {
+									$("#btn_confirm").html("更新成功！");
+									setTimeout(function () {
+										window.location.replace("index.php");
+									}, 1000);
+								} else {
+									canJump = true;
+									alert(data);
+								}
+							}
+						});
+					})
+				}
 			}
 			
 			$('textarea').each(function () {
@@ -473,6 +526,22 @@
 							$("#end_time").removeAttr("disabled");
 						} else if ($(this).val() == "未结单" || $(this).val() == "挂起中") {
 							$("#end_time").attr("disabled", "");
+						}
+					}else if($(this).attr("id") == "is_trouble"){
+						if($(this).val() == "0"){
+							$("#is_remote").val("");
+							$("#is_remote").selectOrDie("update");
+							$("#is_remote").selectOrDie("disable");
+							$("#trouble_class").val("");
+							$("#trouble_class").selectOrDie("update");
+							$("#trouble_class").selectOrDie("disable");
+							$("#trouble_reason").val("");
+							$("#trouble_reason").selectOrDie("update");
+							$("#trouble_reason").selectOrDie("disable");
+						}else{
+							$("#is_remote").selectOrDie("enable");
+							$("#trouble_class").selectOrDie("enable");
+							$("#trouble_reason").selectOrDie("enable");
 						}
 					}
 				}
@@ -627,11 +696,11 @@
 								alert("请选择客户区域！")
 							}else if($("#is_trouble").val() == ""){
 								alert("请选择是否故障！")
-							}else if($("#is_remote").val() == ""){
+							}else if($("#is_trouble").val() == "1" && $("#is_remote").val() == ""){
 								alert("请选择是否对端！")
-							}else if($("#trouble_class").val() == ""){
+							}else if($("#is_trouble").val() == "1" && $("#trouble_class").val() == ""){
 								alert("请选择故障分类！")
-							}else if($("#trouble_reason").val() == ""){
+							}else if($("#is_trouble").val() == "1" && $("#trouble_reason").val() == ""){
 								alert("请选择原因细化！")
 							}else if($("#business_type").val() == ""){
 								alert("请选择行业类型！")
