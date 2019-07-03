@@ -228,6 +228,7 @@
 							order_id: $("#id").val(),
 							description: "",
 							time: "",
+							mark: "",
 							list_order:processList.length+""
 						});
 						console.log(processList);
