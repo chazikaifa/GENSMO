@@ -22,7 +22,7 @@
 				page_group[i] = $("#page"+(i+1));
 			}
 			
-			var sql_step = "";
+			var sql_step = "在途";
 			
 			function refresh_list(cur_page){
 				let order_list = result.result;
@@ -308,13 +308,21 @@
 				window.location.href = "edit.php";
 			});
 			
+			$("#bar_not_finish").click(function(){
+				exportEnd();
+				$(".bar_item").attr("class","bar_item");
+				$("#bar_not_finish").attr("class","bar_item select");
+				sql_step = "在途";
+				get_list();
+			});
+			
 			$("#bar_all").click(function(){
 				exportEnd();
 				$(".bar_item").attr("class","bar_item");
 				$("#bar_all").attr("class","bar_item select");
 				sql_step = "";
 				get_list();
-			})
+			});
 			
 			$("#bar_finish").click(function(){
 				exportEnd();
@@ -322,7 +330,7 @@
 				$("#bar_finish").attr("class","bar_item select");
 				sql_step = "结单";
 				get_list();
-			})
+			});
 			
 			$("#bar_unfinish").click(function(){
 				exportEnd();
@@ -330,7 +338,7 @@
 				$("#bar_unfinish").attr("class","bar_item select");
 				sql_step = "未结单";
 				get_list();
-			})
+			});
 			
 			$("#bar_suspend").click(function(){
 				exportEnd();
@@ -338,7 +346,7 @@
 				$("#bar_suspend").attr("class","bar_item select");
 				sql_step = "挂起中";
 				get_list();
-			})
+			});
 			
 			$("#bar_cancel").click(function(){
 				exportEnd();
@@ -346,13 +354,13 @@
 				$("#bar_cancel").attr("class","bar_item select");
 				sql_step = "已撤销";
 				get_list();
-			})
+			});
 			
 			$("#bar_export").click(function(){
 				exportBegin();
 				$(".bar_item").attr("class","bar_item");
 				$("#bar_export").attr("class","bar_item select");
-			})
+			});
 			
 			$("#btn_export").click(function(){
 				if($("#start_time_start").val() == "" && $("#start_time_end").val()== "" && $("#end_time_start").val() == "" && $("#end_time_end").val() == ""){
@@ -716,7 +724,8 @@
 	<div id="title">政企网络服务中台本地故障单管理系统</div>
 	<div id="navigate_bar">
 			<div class="bar_head"><b>导航栏</b></div>
-			<div id="bar_all" class="bar_item select">所有工单</div>
+			<div id="bar_not_finish" class="bar_item select">在途工单</div>
+			<div id="bar_all" class="bar_item">所有工单</div>
 			<div id="bar_finish" class="bar_item">已结单</div>
 			<div id="bar_unfinish" class="bar_item">未结单</div>
 			<div id="bar_suspend" class="bar_item">挂起工单</div>

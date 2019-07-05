@@ -47,7 +47,9 @@ if($end_time_start != "" && $end_time_end != ""){
 }else if($end_time_end != ""){
 	$condition .= "`end_time` <= '$end_time_end' AND ";
 }
-if($step != ""){
+if ($step == "在途"){
+	$condition .="`step` NOT LIKE '结单' AND ";
+}else if($step != ""){
 	$condition .="`step` LIKE '$step' AND ";
 }
 if($condition != ""){
