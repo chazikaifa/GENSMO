@@ -56,6 +56,7 @@
 					$("#trouble_reason").append("<option value=\"室分停电\">室分停电</option>");
 					$("#trouble_reason").append("<option value=\"室分电池\">室分电池</option>");
 					$("#trouble_reason").append("<option value=\"室分空调\">室分空调</option>");
+					$("#trouble_reason").append("<option value=\"客户动力\">客户动力</option>");
 				} else if (trouble_class == "设备故障") {
 					$("#trouble_reason").append("<option value=\"传输设备\">传输设备</option>");
 					$("#trouble_reason").append("<option value=\"交换设备\">交换设备</option>");
@@ -70,8 +71,9 @@
 					$("#trouble_reason").append("<option value=\"车辆挂断\">车辆挂断</option>");
 					$("#trouble_reason").append("<option value=\"老鼠咬断\">老鼠咬断</option>");
 					$("#trouble_reason").append("<option value=\"自然灾害\">自然灾害</option>");
-					$("#trouble_reason").append("<option value=\"光纤劣化\">光纤劣化</option>");
+					$("#trouble_reason").append("<option value=\"光缆劣化\">光缆劣化</option>");
 					$("#trouble_reason").append("<option value=\"尾纤松动\">尾纤松动</option>");
+					$("#trouble_reason").append("<option value=\"客户内线\">客户内线</option>");
 				} else if (trouble_class == "电缆故障") {
 					$("#trouble_reason").append("<option value=\"市政施工\">市政施工</option>");
 					$("#trouble_reason").append("<option value=\"河涌整治\">河涌整治</option>");
@@ -81,6 +83,7 @@
 					$("#trouble_reason").append("<option value=\"自然灾害\">自然灾害</option>");
 					$("#trouble_reason").append("<option value=\"光纤劣化\">电缆劣化</option>");
 					$("#trouble_reason").append("<option value=\"尾纤松动\">电缆松动</option>");
+					$("#trouble_reason").append("<option value=\"客户内线\">客户内线</option>");
 				}
 					$("#trouble_reason").selectOrDie();
 			}

@@ -28,10 +28,10 @@ mysqli_select_db($conn,'GENSMO');
 
 $condition = "";
 if($id != ""){
-	$condition .= "`id` LIKE '$id' AND " ;
+	$condition .= "`id` LIKE '%$id%' AND " ;
 }
 if($name != ""){
-	$condition .= "`name` LIKE '$name' AND ";
+	$condition .= "`name` LIKE '%$name%' AND ";
 }
 if($start_time_start != "" && $start_time_end != ""){
 	$condition .= "`start_time` BETWEEN '$start_time_start' AND '$start_time_end' AND ";

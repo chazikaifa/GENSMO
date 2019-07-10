@@ -131,6 +131,7 @@ if(!$result){
 						break;
 				}
 				$process .= $index_p."、".$row_p['time']." ".$mark." ".$row_p['description']."\n"; 
+				$index_p += 1;
 			}
 			mysqli_close($conn_p);
 			
