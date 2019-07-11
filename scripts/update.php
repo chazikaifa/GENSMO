@@ -24,7 +24,7 @@ $param_name[18] = 'remark';
 
 $param = array();
 
-foreach($param_name as $name){
+foreach($param_name as $index => $name){
 	if(isset($_POST[$name])){
 		if(($name == 'end_time'||$name == 'time'||$name == 'is_trouble'||$name == 'is_remote'||$name == 'link_id')&&$_POST[$name] == ''){
 			$param[$name] = null;
@@ -32,13 +32,10 @@ foreach($param_name as $name){
 			$param[$name] = $_POST[$name];
 		}
 	}else{
-		if($name == 'end_time'||$name == 'time'||$name == 'is_trouble'||$name == 'is_remote'||$name == 'link_id'){
-			$param[$name] = null;
-		}else{
-			$param[$name] = '';
-		}
+		unset($param_name[$index]);	
 	}
 }
+array_values($param_name);
 
 $dbhost = 'localhost';  // mysql服务器主机地址
 $dbuser = 'root';            // mysql用户名

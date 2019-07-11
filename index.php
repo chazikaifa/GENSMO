@@ -124,47 +124,73 @@
 					});
 					
 					btn_delete.click(function(){
-						if(confirm("确定删除该工单？")){
-							$.ajax({
-								type:"POST",
-								data:{
-									id:id.html(),
-								},
-								url:"./scripts/delete.php",
-								timeout: 5000,
-								beforeSend:function(){
-									
-								},
-								error:function(e){
-									alert(e.responseText);
-								},
-								success:function(data){
-									if(data == "success"){
-										$.ajax({
-											type: "POST",
-											data: {
-												order_id: id.html(),
-											},
-											url: "./scripts/delete_suspend_by_order_id.php",
-											timeout: 5000,
-											beforeSend: function () {
-											},
-											error: function (e) {
-												alert(e.responseText);
-											},
-											success: function(data){
-												if(data == "success"){
-													location.reload();
-												}else{
-													alert(data);
+						if(sql_step == "已撤销"){
+							if(confirm("确定删除该工单？")){
+								$.ajax({
+									type:"POST",
+									data:{
+										id:id.html(),
+									},
+									url:"./scripts/delete.php",
+									timeout: 5000,
+									beforeSend:function(){
+										
+									},
+									error:function(e){
+										alert(e.responseText);
+									},
+									success:function(data){
+										if(data == "success"){
+											$.ajax({
+												type: "POST",
+												data: {
+													order_id: id.html(),
+												},
+												url: "./scripts/delete_process_by_order_id.php",
+												timeout: 5000,
+												beforeSend: function () {
+												},
+												error: function (e) {
+													alert(e.responseText);
+												},
+												success: function(data){
+													if(data == "success"){
+														location.reload();
+													}else{
+														alert(data);
+													}
 												}
-											}
-										});
-									}else{
-										alert(data);
+											});
+										}else{
+											alert(data);
+										}
 									}
-								}
-							});
+								});
+							}
+						}else{
+							if(confirm("确定撤销该工单？")){
+								$.ajax({
+									type: "POST",
+									data: {
+										id: id.html(),
+										step: '已撤销'
+									},
+									url: "./scripts/update.php",
+									timeout: 5000,
+									beforeSend: function () {
+									},
+									error: function (e) {
+										alert(e.responseText);
+									},
+									success: function(data){
+										if(data == "success"){
+											location.reload();
+										}else{
+											alert(data);
+										}
+									}
+								});
+							}
 						}
 					});
 					parent.append(list_item);
