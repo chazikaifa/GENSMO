@@ -25,6 +25,59 @@
 				obj.style.height = (obj.scrollHeight) + 'px';
 			}
 
+			// 对Date的扩展，将 Date 转化为指定格式的String
+			// 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符， 
+			// 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字) 
+			// 例子： 
+			// (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423 
+			// (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18 
+			Date.prototype.Format = function (fmt) {
+				var o = {
+					"M+": this.getMonth() + 1, //月份 
+					"d+": this.getDate(), //日 
+					"h+": this.getHours(), //小时 
+					"m+": this.getMinutes(), //分 
+					"s+": this.getSeconds(), //秒 
+					"q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+					"S": this.getMilliseconds() //毫秒 
+				};
+				if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+				for (var k in o)
+				if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+				return fmt;
+			}
+			
+			$("#start_time").blur(function(){
+				$(this).val(formatDate($(this)));
+			})
+			
+			$("#end_time").blur(function(){
+				$(this).val(formatDate($(this)));
+				cal_time();
+			});
+			
+			function formatDate(obj){
+				if(new Date(obj.val()).getTime() > 0){
+					let fd = new Date(obj.val()).Format("yyyy-MM-dd hh:mm:ss");
+					return fd;
+				}else{
+					return "";
+				}
+			}
+
+			function haveDateTime(str){
+				let reg = /[1-2][0-9]{3}-[0-9]{1,2}-[0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9]/g;
+				if(str.match(reg) == null){
+					return null;
+				}else{
+					let res = {
+						time:str.match(reg),
+						description:str.split(reg)
+					}
+					return res;
+				}
+			}
+			
 			function cal_time(end_time = $("#end_time").val()) {
 				if(is_suspend_available()){
 					let suspend_time = get_suspend_time();
@@ -40,7 +93,6 @@
 				}else{
 					$("#time").val(-2);
 				}
-				
 			}
 
 			function change_trouble_reason(trouble_class) {
@@ -66,6 +118,7 @@
 					$("#trouble_reason").append("<option value=\"客户端联通设备\">客户端联通设备</option>");
 				} else if (trouble_class == "光缆故障") {
 					$("#trouble_reason").append("<option value=\"市政施工\">市政施工</option>");
+					$("#trouble_reason").append("<option value=\"三线整治\">三线整治</option>");
 					$("#trouble_reason").append("<option value=\"河涌整治\">河涌整治</option>");
 					$("#trouble_reason").append("<option value=\"恶意剪线\">恶意剪线</option>");
 					$("#trouble_reason").append("<option value=\"车辆挂断\">车辆挂断</option>");
@@ -76,6 +129,7 @@
 					$("#trouble_reason").append("<option value=\"客户内线\">客户内线</option>");
 				} else if (trouble_class == "电缆故障") {
 					$("#trouble_reason").append("<option value=\"市政施工\">市政施工</option>");
+					$("#trouble_reason").append("<option value=\"三线整治\">三线整治</option>");
 					$("#trouble_reason").append("<option value=\"河涌整治\">河涌整治</option>");
 					$("#trouble_reason").append("<option value=\"恶意剪线\">恶意剪线</option>");
 					$("#trouble_reason").append("<option value=\"车辆挂断\">车辆挂断</option>");
@@ -111,14 +165,61 @@
 			function edit_to_show(obj) {
 				let div = div_template.clone();
 				
-				div.attr("id","");
-				div.html($(obj).val());
-				if (GetQueryString("view") != "true") {
-					div.click(function(){
-						show_to_edit($(this));
-					})
+				let res = haveDateTime($(obj).val())
+				console.log(res);
+				if(res != null && confirm("检测到进展包含时间，是否自动整理？")){
+					let index = parseInt($($("textarea")[0]).parent().attr("index"));
+					if(res.time.length > res.description.length){
+						alert("字符串分割错误！");
+						div.attr("id","");
+						div.html($(obj).val());
+						if (GetQueryString("view") != "true") {
+							div.click(function(){
+								show_to_edit($(this));
+							})
+						}
+						obj.replaceWith(div);
+					}else {
+						if(res.time.length < res.description.length){
+							if(res.description[0] != ""){
+								processList[index].description = res.description[0];
+								res.description.splice(0,1);
+								index++;
+							}else{
+								res.description.splice(0,1);
+								processList.splice(index,1);
+							}
+						}
+						for(let i=0;i<res.description.length;i++){
+							if(res.description[i] != ""){
+								let fd = new Date(res.time[i]).Format("yyyy-MM-dd hh:mm:ss");
+								let newProcess = {
+									process_id: "new_process",
+									order_id: $("#id").val(),
+									description: res.description[i],
+									time: fd,
+									mark: "",
+									list_order:index+""
+								}
+								processList.splice(index,0,newProcess);
+							}
+							index++;
+						}
+						for(;index<processList.length;index++){
+							processList[index].list_order = index+"";
+						}
+						refresh_process_list();
+					}
+				}else{
+					div.attr("id","");
+					div.html($(obj).val());
+					if (GetQueryString("view") != "true") {
+						div.click(function(){
+							show_to_edit($(this));
+						})
+					}
+					obj.replaceWith(div);
 				}
-				obj.replaceWith(div);
 			}
 			
 			function get_process(){
@@ -192,6 +293,9 @@
 							processList[parseInt(template.attr("index"))].time = show_time.val();
 							cal_time();
 						}
+					});
+					show_time.blur(function(){
+						$(this).val(formatDate($(this)));
 					});
 					content.attr("id", "");
 					content.html(processList[x].description);
@@ -1054,13 +1158,13 @@
 			<div class="item half">
 				<div class="key">*开始时间</div>
 				<div class="value">
-					<input id="start_time" type="text" value="" disabled readonly />
+					<input id="start_time" type="text" value="" disabled />
 				</div>
 			</div>
 			<div class="item half">
 				<div class="key">恢复时间</div>
 				<div class="value">
-					<input id="end_time" type="text" value="" disabled readonly />
+					<input id="end_time" type="text" value="" disabled />
 				</div>
 			</div>
 			<div class="item half">
@@ -1209,7 +1313,7 @@
 								<option value="unset_suspend">解挂</option>
 								<option value="">进展</option>
 							</select>
-							<input id="time" class="process_time" type="text" value="2019-06-01 09:00:00" readonly />
+							<input id="time" class="process_time" type="text" value=""/>
 							<div id="div_template" class="process_content"></div>
 							<img id="btn_minus" class="btn_img" src="img/minus.png"/>
 						</li>
