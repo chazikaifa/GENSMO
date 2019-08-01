@@ -18,8 +18,9 @@ $number = $_POST['number'];
 // $limit = $_POST['limit'];
 if(isset($_POST['step'])){
 	$step = $_POST['step'];
+	$step = explode("|",$step);
 }else{
-	$step = "";
+	$step = [""];
 }
 $dbhost = 'localhost';  // mysql服务器主机地址
 $dbuser = 'root';            // mysql用户名
@@ -54,14 +55,20 @@ if($end_time_start != "" && $end_time_end != ""){
 }else if($end_time_end != ""){
 	$condition .= "`end_time` <= '$end_time_end' AND ";
 }
-if($step != ""){
-	$condition .="`step` LIKE '$step' AND ";
+if(count($step) > 1 || $step[0] != ''){
+	$step_sql = "(";
+	foreach($step as $s){
+		$step_sql .="`step` LIKE '$s' OR ";
+	}
+	$step_sql = substr($step_sql,0,strlen($step_sql)-3);
+	$step_sql .= ")";
+	$condition .= $step_sql." AND ";
 }
 if($condition != ""){
 	$condition = substr($condition,0,strlen($condition)-4);
 	$condition = "WHERE ".$condition;
 }
-$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `create_time` DESC ' ;
+$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `create_time` ASC' ;
 //exit($sql);
 $result = mysqli_query($conn, $sql);
 if(!$result){
@@ -164,7 +171,9 @@ if(!$result){
 		}
 		
 		$writer = new Xlsx($spreadsheet);
-		$saveName = uniqid().'.xlsx';
+		date_default_timezone_set('PRC');
+		$d = date('Ymd',time());
+		$saveName = $d.'-'.uniqid().'.xlsx';
 		$writer->save('../files/'.$saveName);
 		
 		$res = array("status" => "success","sum" => $row_number,"fileName" => $saveName);

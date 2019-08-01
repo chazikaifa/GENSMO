@@ -22,7 +22,7 @@
 				page_group[i] = $("#page"+(i+1));
 			}
 			
-			var sql_step = "在途";
+			var sql_step = "未结单|挂起中";
 			
 			function refresh_list(cur_page){
 				let order_list = result.result;
@@ -196,7 +196,7 @@
 					parent.append(list_item);
 				}
 			}
-			function get_list(page = 0,callback = null){
+			function get_list(page = 0,callback = null,step = sql_step){
 				if(callback == null){
 					callback = function(data){
 						result = data;
@@ -215,7 +215,7 @@
 						number:$("#number_input").val(),
 						index:page*$("#limit").val(),
 						limit:$("#limit").val(),
-						step:sql_step
+						step:step
 					},
 					url:"./scripts/getList.php",
 					dataType: 'json',
@@ -239,8 +239,8 @@
 				$("#list_foot").css("display","none");
 				
 				$("#btn_export").css("display","");
-				$("#search_container").attr("class","");
-				sql_step = "结单";
+				$("#search_container").attr("class","export");
+				//sql_step = "结单";
 			}
 			
 			function exportEnd(){
@@ -338,7 +338,7 @@
 				exportEnd();
 				$(".bar_item").attr("class","bar_item");
 				$("#bar_not_finish").attr("class","bar_item select");
-				sql_step = "在途";
+				sql_step = "未结单|挂起中";
 				get_list();
 			});
 			
@@ -390,8 +390,28 @@
 			
 			$("#btn_export").click(function(){
 				if($("#start_time_start").val() == "" && $("#start_time_end").val()== "" && $("#end_time_start").val() == "" && $("#end_time_end").val() == ""){
-					alert("请至少选择一个时间！");
+					alert("请至少填写一个时间！");
 					return;
+				}
+				let step = "";
+				if(!($("#step_complete")[0].checked && $("#step_incomplete")[0].checked && $("#step_suspend")[0].checked && $("#step_cancel")[0].checked)){
+					if($("#step_complete")[0].checked){
+						step = step + "结单|";
+					}
+					if($("#step_incomplete")[0].checked){
+						step = step + "未结单|";
+					}
+					if($("#step_suspend")[0].checked){
+						step = step + "挂起|";
+					}
+					if($("#step_cancel")[0].checked){
+						step = step + "已撤销|";
+					}
+					if(step == ""){
+						alert("请至少选择一个工单状态！")
+						return;
+					}
+					step = step.slice(0,-1);
 				}
 				get_list(0,function(data){
 					if(data.sum == 0){
@@ -409,7 +429,7 @@
 								number:$("#number_input").val(),
 								index:0,
 								limit:data.sum,
-								step:sql_step
+								step:step
 							},
 							url:"./scripts/export.php",
 							dataType: 'json',
@@ -433,7 +453,7 @@
 							}
 						});
 					}
-				})
+				},step)
 			})
 			
 			$("#to_first").click(function(){
@@ -539,6 +559,10 @@
 			height: 0;
 		}
 		
+		#search_container.export{
+			height:35vh;
+		}
+		
 		.search{
 			display:flex;
 			align-items: center;
@@ -553,6 +577,15 @@
 			line-height:2vh;
 			text-align:center;
 			margin:2vw;
+		}
+		
+		.checkbox_title{
+			display: inline-block;
+			font-size:1vh;
+			height:1vh;
+			line-height:1vh;
+			text-align:center;
+			margin-right:1vw;
 		}
 		
 		.input {
@@ -783,6 +816,13 @@
 			<div id="number_search" class="search">
 				<span class="search_title">电路编号:</span>
 				<input id="number_input" type="text" class="input" value=""/>
+			</div>
+			<div id="step" class="search">
+				<span class="search_title">工单状态:</span>
+				<input id="step_complete" type="checkbox" checked/><span class="checkbox_title">结单</span>
+				<input id="step_incomplete" type="checkbox" checked/><span class="checkbox_title">未结单</span>
+				<input id="step_suspend" type="checkbox" checked/><span class="checkbox_title">挂起</span>
+				<input id="step_cancel" type="checkbox" checked/><span class="checkbox_title">已撤销</span>
 			</div>
 		</div>
 		<div id="btn_export" style="display:none" class="btn">导出</div>

@@ -11,8 +11,9 @@ $index = $_POST['index'];
 $limit = $_POST['limit'];
 if(isset($_POST['step'])){
 	$step = $_POST['step'];
+	$step = explode("|",$step);
 }else{
-	$step = "";
+	$step = [""];
 }
 $dbhost = 'localhost';  // mysql服务器主机地址
 $dbuser = 'root';            // mysql用户名
@@ -47,10 +48,14 @@ if($end_time_start != "" && $end_time_end != ""){
 }else if($end_time_end != ""){
 	$condition .= "`end_time` <= '$end_time_end' AND ";
 }
-if ($step == "在途"){
-	$condition .="(`step` LIKE '未结单' OR `step` LIKE '挂起中') AND ";
-}else if($step != ""){
-	$condition .="`step` LIKE '$step' AND ";
+if(count($step) > 1 || $step[0] != ''){
+	$step_sql = "(";
+	foreach($step as $s){
+		$step_sql .="`step` LIKE '$s' OR ";
+	}
+	$step_sql = substr($step_sql,0,strlen($step_sql)-3);
+	$step_sql .= ")";
+	$condition .= $step_sql." AND ";
 }
 if($condition != ""){
 	$condition = substr($condition,0,strlen($condition)-4);

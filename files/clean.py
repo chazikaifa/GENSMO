@@ -1,0 +1,16 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+import os
+import datetime
+list = os.listdir(".")
+sum = 0;
+for file in list:
+	if file.split('.')[-1] == 'xlsx':
+		dateStr = file.split('-')[0]
+		d = datetime.datetime.strptime(dateStr,'%Y%m%d')
+		if (datetime.datetime.now() - d).days > 30:
+			os.remove(file)
+			sum = sum + 1;
+
+with open('./clean_log.txt','a') as f:
+	f.write(datetime.datetime.now().strftime('%Y-%m-%d') + " 清理了" + str(sum) + "个文档\n")
