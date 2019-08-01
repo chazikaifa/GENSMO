@@ -75,7 +75,14 @@ $result = mysqli_query($conn, $sql);
 if(!$result){
 	die('error:'.mysqli_error($conn));
 }else{
-	echo "success";
+	$name = $param['name'];
+	$start_time = $param['start_time'];
+	$sql = "select id from `order` WHERE `name` LIKE '$name' AND `start_time` = '$start_time' ORDER BY `create_time` DESC";
+	$result = mysqli_query($conn, $sql);
+	$row = mysqli_fetch_row($result);
+	$newID = $row[0];
+	$res = array("status" => "success","id" => $newID);
+	echo json_encode($res);
 }
 
 mysqli_close($conn);

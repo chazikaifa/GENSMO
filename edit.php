@@ -479,6 +479,7 @@
 						remark: $("#remark").val(),
 					},
 					url: "./scripts/new.php",
+					dataType: 'json',
 					timeout: 5000,
 					beforeSend: function () {
 						canJump = false;
@@ -488,10 +489,10 @@
 						canJump = true;
 					},
 					success: function (data) {
-						if (data == "success") {
+						if (data.status == "success") {
 							$("#btn_confirm").html("新建成功！");
 							setTimeout(function () {
-								window.location.href = "index.php";
+								window.location.replace("edit.php?id=" + data.id);
 							}, 1000);
 						} else {
 							canJump = true;
@@ -561,7 +562,7 @@
 								if (data == "success") {
 									$("#btn_confirm").html("更新成功！");
 									setTimeout(function () {
-										window.location.replace("index.php");
+										window.location.replace("edit.php?id=" + $("#id").val() + "&view=true");
 									}, 1000);
 								} else {
 									canJump = true;
@@ -608,7 +609,7 @@
 								if (data == "success") {
 									$("#btn_confirm").html("更新成功！");
 									setTimeout(function () {
-										window.location.replace("index.php");
+										window.location.replace("edit.php?id=" + $("#id").val() + "&view=true");
 									}, 1000);
 								} else {
 									canJump = true;
@@ -779,9 +780,9 @@
 				});
 			}
 
-			$("#btn_cancel").click(function () {
-				window.location.href = "index.php";
-			})
+			// $("#btn_cancel").click(function () {
+				// window.location.href = "index.php";
+			// })
 
 			$("#btn_confirm").click(function () {
 				if ($("#name").val() == "") {
@@ -1329,12 +1330,7 @@
 					<textarea id="remark" ></textarea>
 				</div>
 			</div>
-			<div class="item half">
-				<div id="btn_cancel" class="btn">
-					返回
-				</div>
-			</div>
-			<div class="item half">
+			<div class="item">
 				<div id="btn_confirm" class="btn primary">
 					确认
 				</div>

@@ -116,11 +116,13 @@
 					step.html(order_list[x].step);
 					
 					btn_view.click(function(){
-						window.location.href = "edit.php?id="+id.html()+"&view=true";
+						window.open("edit.php?id="+id.html()+"&view=true");
+						//window.location.href = "edit.php?id="+id.html()+"&view=true";
 					});
 					
 					btn_edit.click(function(){
-						window.location.href = "edit.php?id="+id.html();
+						window.open("edit.php?id="+id.html());
+						//window.location.href = "edit.php?id="+id.html();
 					});
 					
 					btn_delete.click(function(){
@@ -331,7 +333,7 @@
 			});
 			
 			$("#btn_new").click(function(){
-				window.location.href = "edit.php";
+				window.open("edit.php");
 			});
 			
 			$("#bar_not_finish").click(function(){
