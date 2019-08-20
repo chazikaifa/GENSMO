@@ -89,6 +89,8 @@
 						}else{
 							$("#time").val("");
 						}
+					}else{
+						$("#time").val(suspend_time);
 					}
 				}else{
 					$("#time").val(-2);
@@ -279,7 +281,11 @@
 					show_index.html((parseInt(x) + 1));
 					
 					show_mark.val(processList[x].mark);
-					
+					show_mark.selectOrDie({
+						onChange: function () {
+							processList[parseInt(template.attr("index"))].mark = $(this).val();
+						}
+					});
 					show_time.val(processList[x].time);
 					show_time.jeDate({
 						format: "YYYY-MM-DD hh:mm:ss",
@@ -317,13 +323,6 @@
 						show_mark.selectOrDie("disable");
 						show_time.attr("disabled","");
 					}
-					
-					show_mark.selectOrDie({
-						onChange: function () {
-							processList[parseInt(template.attr("index"))].mark = $(this).val();
-						}
-					});
-					
 					$("#process_list").append(template);
 				}
 				if (GetQueryString("view") != "true") {
@@ -476,6 +475,7 @@
 						trouble_class: $("#trouble_class").val(),
 						trouble_reason: $("#trouble_reason").val(),
 						business_type: $("#business_type").val(),
+						major:$("#major").val(),
 						remark: $("#remark").val(),
 					},
 					url: "./scripts/new.php",
@@ -547,6 +547,7 @@
 								trouble_class: $("#trouble_class").val(),
 								trouble_reason: $("#trouble_reason").val(),
 								business_type: $("#business_type").val(),
+								major:$("#major").val(),
 								remark: $("#remark").val(),
 							},
 							url: "./scripts/update.php",
@@ -594,6 +595,7 @@
 								trouble_class: $("#trouble_class").val(),
 								trouble_reason: $("#trouble_reason").val(),
 								business_type: $("#business_type").val(),
+								major:$("#major").val(),
 								remark: $("#remark").val(),
 							},
 							url: "./scripts/update.php",
@@ -739,6 +741,8 @@
 
 							$("#business_type").val(data[17]);
 							$("#remark").html(data[18]);
+
+							$("#major").val(data[19]);
 
 							$("#end_time").jeDate({
 								format: "YYYY-MM-DD hh:mm:ss",
@@ -1291,6 +1295,20 @@
 						<option value="邮电计算机信息业">邮电计算机信息业</option>
 						<option value="建筑业">建筑业</option>
 						<option value="其他行业">其他行业</option>
+					</select>
+				</div>
+			</div>
+			<div class="item half">
+				<div class="key">责任专业</div>
+				<div class="value">
+					<select id="major">
+						<option value="">请选择</option>
+						<option value="传输">传输</option>
+						<option value="交换">交换</option>
+						<option value="数据">数据</option>
+						<option value="接入">接入</option>
+						<option value="政企云">政企云</option>
+						<option value="其他">其他</option>
 					</select>
 				</div>
 			</div>

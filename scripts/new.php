@@ -21,6 +21,7 @@ $param_name[15] = 'trouble_class';
 $param_name[16] = 'trouble_reason';
 $param_name[17] = 'business_type';
 $param_name[18] = 'remark';
+$param_name[19] = 'major';
 
 $param = array();
 

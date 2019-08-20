@@ -99,7 +99,8 @@ if(!$result){
 		$sheet->setCellValueByColumnAndRow(16,1, '故障分类');
 		$sheet->setCellValueByColumnAndRow(17,1, '原因细化');
 		$sheet->setCellValueByColumnAndRow(18,1, '行业类型');
-		$sheet->setCellValueByColumnAndRow(19,1, '备注');
+		$sheet->setCellValueByColumnAndRow(19,1, '责任专业');
+		$sheet->setCellValueByColumnAndRow(20,1, '备注');
 		
 		$i = 2;
 		
@@ -166,7 +167,8 @@ if(!$result){
 			$sheet->setCellValueByColumnAndRow(16,$i, $row['trouble_class']);
 			$sheet->setCellValueByColumnAndRow(17,$i, $row['trouble_reason']);
 			$sheet->setCellValueByColumnAndRow(18,$i, $row['business_type']);
-			$sheet->setCellValueByColumnAndRow(19,$i, $row['remark']);
+			$sheet->setCellValueByColumnAndRow(19,$i, $row['major']);
+			$sheet->setCellValueByColumnAndRow(20,$i, $row['remark']);
 			$i++;
 		}
 		

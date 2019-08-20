@@ -247,10 +247,14 @@
 			
 			function exportEnd(){
 				$("#btn_show").css("display","");
+				$("#btn_show").css("transform","rotate(0)");
 				$("#btn_search").css("display","");
+				$("#btn_search").attr("class","btn_img hidden");
 				$("#btn_empty").css("display","");
+				$("#btn_empty").attr("class","btn_img hidden");
 				$("#list_head").css("display","");
 				$("#order_list").css("display","");
+				$("#order_list").attr("class","");
 				$("#list_foot").css("display","");
 				
 				$("#id_input").val("");
