@@ -57,6 +57,11 @@ if(count($step) > 1 || $step[0] != ''){
 	$step_sql .= ")";
 	$condition .= $step_sql." AND ";
 }
+
+if($number != ""){
+	$condition .= "`circuit_number` LIKE '%$number%' AND ";
+}
+
 if($condition != ""){
 	$condition = substr($condition,0,strlen($condition)-4);
 	$condition = "WHERE ".$condition;

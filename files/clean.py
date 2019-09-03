@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 import os
 import datetime
-list = os.listdir(".")
+list = os.listdir("D:/wamp64/www/GENSMO/files/")
 sum = 0;
 for file in list:
 	if file.split('.')[-1] == 'xlsx':

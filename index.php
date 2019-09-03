@@ -439,13 +439,16 @@
 							},
 							url:"./scripts/export.php",
 							dataType: 'json',
-							timeout: 5000,
 							beforeSend:function(){
 								
 							},
 							error:function(e){
-								alert(e.responseText);
-								console.log(e.responseText);
+								if(e.statusText == "timeout"){
+									alert("请求超时!");
+								}else{
+									alert(e.statusText);
+								}
+								console.log(e.statusText);
 							},
 							success:function(data){
 								

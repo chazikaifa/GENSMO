@@ -29,7 +29,7 @@ $conn = mysqli_connect($dbhost, $dbuser, $dbpass);
 if(! $conn )
 {
 	//$message = array("status" => "error","result" => mysqli_error());
-	die(mysqli_error());
+	die("connect fail");
 }
 mysqli_query($conn , "set names utf8");
 mysqli_select_db($conn,'GENSMO');
@@ -73,7 +73,7 @@ $sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `crea
 $result = mysqli_query($conn, $sql);
 if(!$result){
 	//$message = array("status" => "error","result" => mysqli_error());
-	die(mysqli_error($conn));
+	die("sql fail");
 }else{
 	$row_number = mysqli_fetch_row(mysqli_query($conn,"SELECT FOUND_ROWS()"))[0];
 	
