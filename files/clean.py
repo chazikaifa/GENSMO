@@ -2,14 +2,15 @@
 # -*- coding: UTF-8 -*-
 import os
 import datetime
-list = os.listdir("D:/wamp64/www/GENSMO/files/")
+rootdir =  "D:/wamp64/www/GENSMO/files/";
+list = os.listdir(rootdir);
 sum = 0;
 for file in list:
 	if file.split('.')[-1] == 'xlsx':
 		dateStr = file.split('-')[0]
 		d = datetime.datetime.strptime(dateStr,'%Y%m%d')
 		if (datetime.datetime.now() - d).days > 30:
-			os.remove(file)
+			os.remove(rootdir+file)
 			sum = sum + 1;
 
 with open('D:/wamp64/www/GENSMO/files/clean_log.txt','a') as f:

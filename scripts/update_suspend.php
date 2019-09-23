@@ -28,8 +28,8 @@ foreach($param_name as $index => $name){
 }
 
 $dbhost = 'localhost';  // mysql服务器主机地址
-$dbuser = 'root';            // mysql用户名
-$dbpass = '';          // mysql用户名密码
+$dbuser = 'gensmo';            // mysql用户名
+$dbpass = 'SoSF701TmkYrGY8m';          // mysql用户名密码
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass);
 if(! $conn )
 {

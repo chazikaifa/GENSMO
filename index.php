@@ -394,6 +394,10 @@
 				$("#bar_export").attr("class","bar_item select");
 			});
 			
+			$("#bar_customer_query").click(function(){
+				window.open("customer_query/index.html");
+			});
+			
 			$("#btn_export").click(function(){
 				if($("#start_time_start").val() == "" && $("#start_time_end").val()== "" && $("#end_time_start").val() == "" && $("#end_time_end").val() == ""){
 					alert("请至少填写一个时间！");
@@ -799,6 +803,8 @@
 			<div id="bar_suspend" class="bar_item">挂起工单</div>
 			<div id="bar_cancel" class="bar_item">已撤单</div>
 			<div id="bar_export" class="bar_item">工单导出</div>
+			<div class="bar_head"><b>工具箱</b></div>
+			<div id="bar_customer_query" class="bar_item">客户查询</div>
 	</div>
 	<div id="container">
 		<div id="search_container" class="hidden">

@@ -23,8 +23,8 @@ if(isset($_POST['step'])){
 	$step = [""];
 }
 $dbhost = 'localhost';  // mysql服务器主机地址
-$dbuser = 'root';            // mysql用户名
-$dbpass = '';          // mysql用户名密码
+$dbuser = 'gensmo';            // mysql用户名
+$dbpass = 'SoSF701TmkYrGY8m';          // mysql用户名密码
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass);
 if(! $conn )
 {
@@ -36,10 +36,10 @@ mysqli_select_db($conn,'GENSMO');
 
 $condition = "";
 if($id != ""){
-	$condition .= "`id` LIKE '$id' AND " ;
+	$condition .= "`id` LIKE '%$id%' AND " ;
 }
 if($name != ""){
-	$condition .= "`name` LIKE '$name' AND ";
+	$condition .= "`name` LIKE '%$name%' AND ";
 }
 if($start_time_start != "" && $start_time_end != ""){
 	$condition .= "`start_time` BETWEEN '$start_time_start' AND '$start_time_end' AND ";

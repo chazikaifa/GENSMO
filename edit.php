@@ -137,8 +137,8 @@
 					$("#trouble_reason").append("<option value=\"车辆挂断\">车辆挂断</option>");
 					$("#trouble_reason").append("<option value=\"老鼠咬断\">老鼠咬断</option>");
 					$("#trouble_reason").append("<option value=\"自然灾害\">自然灾害</option>");
-					$("#trouble_reason").append("<option value=\"光纤劣化\">电缆劣化</option>");
-					$("#trouble_reason").append("<option value=\"尾纤松动\">电缆松动</option>");
+					$("#trouble_reason").append("<option value=\"电缆劣化\">电缆劣化</option>");
+					$("#trouble_reason").append("<option value=\"电缆松动\">电缆松动</option>");
 					$("#trouble_reason").append("<option value=\"客户内线\">客户内线</option>");
 				}
 					$("#trouble_reason").selectOrDie();
@@ -237,7 +237,7 @@
 						canJump = false;
 					},
 					error: function (e) {
-						alert(e.responseText);
+						alert("get process network error:"+e.responseText);
 						canJump = true;
 					},
 					success: function (data) {
@@ -247,7 +247,7 @@
 							console.log(processList);
 							refresh_process_list();
 						} else {
-							alert(data.error_message);
+							alert("on get process:"+data.error_message);
 						}
 					}
 				});
@@ -354,7 +354,7 @@
 					beforeSend: function () {
 					},
 					error: function (e) {
-						alert(e.responseText);
+						alert("on delete process:"+e.responseText);
 					},
 					success: callback
 				});
@@ -376,7 +376,7 @@
 					beforeSend: function () {
 					},
 					error: function (e) {
-						alert(e.responseText);
+						alert("add process network error:"+e.responseText);
 					},
 					success: callback
 				});
@@ -394,7 +394,7 @@
 								}
 							}else{
 								console.log(data);
-								alert(data);
+								alert("add process fail:"+data);
 							}
 						});
 					}
@@ -485,7 +485,7 @@
 						canJump = false;
 					},
 					error: function (e) {
-						alert(e.responseText);
+						alert("new network error:"+e.responseText);
 						canJump = true;
 					},
 					success: function (data) {
@@ -496,7 +496,7 @@
 							}, 1000);
 						} else {
 							canJump = true;
-							alert(data);
+							alert("new fail:"+data);
 						}
 					}
 				});
@@ -556,7 +556,7 @@
 								canJump = false;
 							},
 							error: function (e) {
-								alert(e.responseText);
+								alert("update network error:"+e.responseText);
 								canJump = true;
 							},
 							success: function (data) {
@@ -567,7 +567,7 @@
 									}, 1000);
 								} else {
 									canJump = true;
-									alert(data);
+									alert("update fail:"+data);
 								}
 							}
 						});
@@ -604,7 +604,7 @@
 								canJump = false;
 							},
 							error: function (e) {
-								alert(e.responseText);
+								alert("update network error:"+e.responseText);
 								canJump = true;
 							},
 							success: function (data) {
@@ -615,7 +615,7 @@
 									}, 1000);
 								} else {
 									canJump = true;
-									alert(data);
+									alert("update fail:"+data);
 								}
 							}
 						});
@@ -697,12 +697,12 @@
 					timeout: 5000,
 					beforeSend: function () {},
 					error: function (e) {
-						alert(e.responseText);
+						alert("update network error:"+e.responseText);
 					},
 					success: function (data) {
 						//console.log(data);
 						if (data.status == "fail") {
-							alert(data.error_msg);
+							alert("update fail:"+data.error_msg);
 						} else if (data.status == "success") {
 							//console.log(data);
 							get_process();
