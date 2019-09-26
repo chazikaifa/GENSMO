@@ -26,7 +26,8 @@ $result = mysqli_query($conn, $sql);
 if(!$result){
 	die('error:'.mysqli_error($conn));
 }else{
-	echo "success";
+	$res = array("status" => "success");
+	echo json_encode($res);
 }
 
 mysqli_close($conn);

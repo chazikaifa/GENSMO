@@ -93,7 +93,7 @@
 						$("#time").val(suspend_time);
 					}
 				}else{
-					$("#time").val(-2);
+					$("#time").val("进展错误!");
 				}
 			}
 
@@ -210,6 +210,7 @@
 						for(;index<processList.length;index++){
 							processList[index].list_order = index+"";
 						}
+						cal_time();
 						refresh_process_list();
 					}
 				}else{
@@ -284,6 +285,7 @@
 					show_mark.selectOrDie({
 						onChange: function () {
 							processList[parseInt(template.attr("index"))].mark = $(this).val();
+							cal_time();
 						}
 					});
 					show_time.val(processList[x].time);
@@ -302,6 +304,7 @@
 					});
 					show_time.blur(function(){
 						$(this).val(formatDate($(this)));
+						cal_time();
 					});
 					content.attr("id", "");
 					content.html(processList[x].description);
@@ -954,6 +957,7 @@
 			align-items:center;
 			background:#CDCDCD;
 			color:#000000;
+			user-select:none;
 		}
 		
 		#process_list{

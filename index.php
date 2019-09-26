@@ -537,20 +537,24 @@
 			font-size:2vh;
 			text-align:center;
 			line-height:5vh;
+			z-index:0;
+			transition: all 0.2s;
 		}
 		
 		.bar_item:hover{
-			background: #AAAAAA;	
+			position:relative;
+			box-shadow:0 0 20px 0 #AAAAAA;
+			z-index:3;
 		}
 		
 		.bar_item:active{
 			background: #999999;
-			color: #FFFFFF;
+			color: #EA7777
 		}
 		
 		.bar_item.select{
 			color:#FFFFFF;
-			background: #AAAAAA;
+			background: #EA7777;
 		}
 		
 		#container{
