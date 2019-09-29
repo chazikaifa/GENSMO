@@ -5,7 +5,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
-
 header("Content-Type: text/html;charset=utf-8");
 $id = $_POST['id'];
 $name = $_POST['name'];

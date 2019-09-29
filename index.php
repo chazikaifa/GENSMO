@@ -529,6 +529,7 @@
 			font-size:2vh;
 			text-align:center;
 			line-height:5vh;
+			user-select:none;
 		}
 		
 		.bar_item{
@@ -539,6 +540,7 @@
 			line-height:5vh;
 			z-index:0;
 			transition: all 0.2s;
+			user-select:none;
 		}
 		
 		.bar_item:hover{
@@ -717,6 +719,7 @@
 			border-radius: 1vh;
 			background:#EA7777;
 			color: #FFFFFF;
+			user-select:none;
 		}
 		
 		.btn:hover{
@@ -735,6 +738,7 @@
 			padding:0.5vh;
 			margin: 0.2vh;
 			transition: all 0.5s;
+			user-select:none;
 		}
 		
 		.btn_img:active{
@@ -770,6 +774,7 @@
 			width: 2vh;
 			margin:0;
 			border: 1px solid #DEDEDE;
+			user-select:none;
 		}
 		
 		.btn_page > img {
