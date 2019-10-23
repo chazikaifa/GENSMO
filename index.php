@@ -139,7 +139,8 @@
 										
 									},
 									error:function(e){
-										alert(e.responseText);
+										alert(e);
+										console.log(e);
 									},
 									success:function(data){
 										if(data == "success"){
@@ -153,7 +154,8 @@
 												beforeSend: function () {
 												},
 												error: function (e) {
-													alert(e.responseText);
+													alert(e);
+													console.log(e);
 												},
 												success: function(data){
 													if(data == "success"){
@@ -182,7 +184,8 @@
 									beforeSend: function () {
 									},
 									error: function (e) {
-										alert(e.responseText);
+										alert(e);
+										console.log(e);
 									},
 									success: function(data){
 										if(data == "success"){
@@ -226,7 +229,8 @@
 						
 					},
 					error:function(e){
-						alert(e.responseText);
+						alert(e);
+						console.log(e);
 					},
 					success:callback
 				});

@@ -36,6 +36,9 @@ function getSQL($titles, $values){
 	$sql .= ') VALUES (NULL,';
 	for($i = 0;$i < sizeof($titles);$i++){
 		if($titles[$i] != "pass"){
+			if($titles[$i] == 'unify_name' && $values[$i] == ''){
+				return '';
+			}
 			$v = $values[$i];
 			if(!is_null($v)){
 				$sql .= "'".$v."',";
@@ -51,7 +54,7 @@ function getSQL($titles, $values){
 
 if(!empty($_FILES['file'])){
 	if($_FILES['file']['size'] > 5*1024*1024){
-		exit(json_encode(array("status"=>"fail","error_message"=>"file too large")));
+		exit(json_encode(array("status"=>"fail","errMsg"=>"file too large")));
 	}
 	$exename = getExeName($_FILES['file']['name']);
 	//检验后缀
@@ -60,7 +63,7 @@ if(!empty($_FILES['file'])){
 	}else if($exename == 'xlsx'){
 		
 	}else{
-		exit(json_encode(array("status"=>"fail","error_message"=>"wrong file type")));
+		exit(json_encode(array("status"=>"fail","errMsg"=>"wrong file type")));
 	}
 	
 	$SavePath = "../files/".uniqid().'.'.$exename;
@@ -78,11 +81,14 @@ if(!empty($_FILES['file'])){
 			$title[] = $t -> getFormattedValue();
 			$titles->next();
 		}
+		$n = 0;
+		$unify_index = -1;
 		$name = array();
 		foreach($title as $t){
 			switch($t){
 				case '统一名称':
 					$name[] = 'unify_name';
+					$unify_index = $n;
 					break;
 				case '客户名称':
 					$name[] = 'name';
@@ -121,19 +127,35 @@ if(!empty($_FILES['file'])){
 					$name[] = 'pass';
 					break;
 				default:
-					exit(json_encode(array("status"=>"fail","error_message"=>"title error")));
+					exit(json_encode(array("status"=>"fail","errMsg"=>"title error")));
 			}
+			$n++;
 		}
+		if($unify_index < 0){
+			exit(json_encode(array("status"=>"fail","errMsg"=>"title error")));
+		}
+		
 		$sql = "";
 		$sum = 0;
-		while($rows -> valid()){
+		$empty_count = 0;
+		while($rows -> valid() && $empty_count < 3){
 			$sum++;
 			$row = $rows -> current();
 			$cells = $row -> getCellIterator();
 			$values = array();
+			$cell_index = 0;
 			while($cells -> valid()){
 				$cell = $cells -> current();
-				$values[] = $cell -> getFormattedValue();
+				$v = $cell -> getFormattedValue();
+				if($cell_index == $unify_index && $v == ''){
+					$empty_count++;
+					$sum--;
+					break;
+				}else{
+					$empty_count = 0;
+				}
+				$values[] = $v;
+				$cell_index++;
 				$cells -> next();
 			}
 			$sql .= getSQL($name,$values);
@@ -144,21 +166,21 @@ if(!empty($_FILES['file'])){
 		
 		$conn = mysqli_connect($dbhost, $dbuser, $dbpass);
 		if(! $conn ){
-			exit(json_encode(array("status"=>"fail","error_message"=>"".mysqli_error($conn))));
+			exit(json_encode(array("status"=>"fail","errMsg"=>"".mysqli_error($conn))));
 		}
 		mysqli_query($conn , "set names utf8");
 		mysqli_select_db($conn,'GENSMO');
 		$result = mysqli_multi_query($conn, $sql);
 		if(!$result){
-			exit(json_encode(array("status"=>"fail","error_message"=>"".mysqli_error($conn))));
+			exit(json_encode(array("status"=>"fail","errMsg"=>"".mysqli_error($conn))));
 		}else{
 			echo json_encode(array("status"=>"success","sum"=>$sum));	
 		}			
 		unlink($SavePath);
 	}else{
-		exit(json_encode(array("status"=>"fail","error_message"=>"save file fail")));
+		exit(json_encode(array("status"=>"fail","errMsg"=>"save file fail")));
 	}
 }else{
-	echo json_encode(array("status"=>"fail","error_message"=>"empty files"));
+	echo json_encode(array("status"=>"fail","errMsg"=>"empty files"));
 }
 ?>

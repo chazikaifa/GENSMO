@@ -689,6 +689,7 @@
 
 			} else {
 				var id = GetQueryString("id");
+				document.title = id;
 				//编辑工单
 				$.ajax({
 					type: "POST",
