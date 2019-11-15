@@ -91,7 +91,7 @@
 					let id = list_item.find("#id");
 					let name = list_item.find("#name");
 					let circuit_number = list_item.find("#circuit_number");
-					let trouble_symptom = list_item.find("#trouble_symptom");
+					let remark = list_item.find("#remark");
 					let start_time = list_item.find("#start_time");
 					let step = list_item.find("#step");
 					let btn_view = list_item.find("#view");
@@ -111,7 +111,9 @@
 					// })
 					name.html(order_list[x].name);
 					circuit_number.html(order_list[x].circuit_number);
-					trouble_symptom.html(order_list[x].trouble_symptom);
+					
+					remark.html(order_list[x].remark);
+					
 					start_time.html(order_list[x].start_time);
 					step.html(order_list[x].step);
 					
@@ -862,7 +864,7 @@
 			<span class="item head"><span class="content">故障单编号</span></span>
 			<span class="item head"><span class="content">客户名称</span></span>
 			<span class="item head"><span class="content">电路编号</span></span>
-			<span class="item head"><span class="content">故障简述</span></span>
+			<span class="item head"><span class="content">备注</span></span>
 			<span class="item head"><span class="content">故障发生时间</span></span>
 			<span class="item head"><span class="content">工单状态</span></span>
 			<span class="item head"><span class="content">操作</span></span>
@@ -874,7 +876,7 @@
 					<span class="item"><span id="id" class="content">B20190425-0001</span></span>
 					<span class="item"><span id="name" class="content">XXXXXXXX公司</span></span>
 					<span class="item"><span id="circuit_number" class="content">中山大道NE00001</span></span>
-					<span class="item"><span id="trouble_symptom" class="content">不通</span></span>
+					<span class="item"><span id="remark" class="content">不通</span></span>
 					<span class="item"><span id="start_time" class="content">2019-04-25 09：30：23</span></span>
 					<span class="item"><span id="step" class="content">结单</span></span>
 					<span class="item"><span class="content">

@@ -689,7 +689,6 @@
 
 			} else {
 				var id = GetQueryString("id");
-				document.title = id;
 				//编辑工单
 				$.ajax({
 					type: "POST",
@@ -713,6 +712,9 @@
 							
 							$("#id").val(data[0]);
 							$("#name").val(data[1]);
+							
+							document.title = data[1];
+							
 							$("#start_time").val(data[2]);
 							$("#end_time").val(data[3]);
 
