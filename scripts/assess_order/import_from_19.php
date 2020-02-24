@@ -99,8 +99,8 @@ function getJSON($rows){
 		if($title->title == 'step'){
 			$cells->seek($title->index[0]);
 			$step = $cells->current()->getFormattedValue();
-			if($step == '已撤销'){
-				//已撤销的工单不导入
+			if($step != '已结单'){
+				//只导入已结单的工单
 				$json['step'] = 'cancel';
 				return $json;
 			}else{
@@ -129,6 +129,8 @@ function getJSON($rows){
 	}
 	if($judge = judgeTrouble($json)){
 		$json = $judge;
+	}else{
+		$json['is_trouble'] = NULL;
 	}
 	$json = judgeMajor($json);
 	$json = is_TOPN($json);
@@ -147,17 +149,17 @@ function judgeTrouble($json){
 				continue;
 			}else if(count($split) == 1){
 				if($split[0] == '否'){
-					$json['is_trouble'] = false;
+					$json['is_trouble'] = 0;
 					break;
 				}
 				if(in_array($split[0], $customer_reason)){
-					$json['is_trouble'] = true;
+					$json['is_trouble'] = 1;
 					$json['trouble_class'] = $split[0];
 					break;
 				}
 			}else{
 				if(in_array($split[0], $trouble_class)){
-					$json['is_trouble'] = true;
+					$json['is_trouble'] = 1;
 					$json['trouble_class'] = $split[0];
 					if(in_array($split[1], $trouble_reason[$split[0]])){
 						$json['trouble_reason'] = $split[1];
@@ -243,7 +245,7 @@ function judgeTimetLimit($json){
 			case '语音业务':
 				$json['time_limit'] = 480;
 				break;
-			case '互联网业务员':
+			case '互联网业务':
 				if($trouble_symptom == '不通'){
 					$json['time_limit'] = 240;
 				}else{
@@ -261,6 +263,8 @@ function judgeTimetLimit($json){
 					$json['time_limit'] = 480;
 				}
 				break;
+			default:
+				$json['time_limit'] = 480;
 		}
 	}else{
 		if($trouble_type != '语音业务' && $trouble_symptom == '不通'){
@@ -278,7 +282,7 @@ function judgeTimetLimit($json){
 }
 
 if(!empty($_FILES['file'])){
-	if($_FILES['file']['size'] > 10*1024*1024){
+	if($_FILES['file']['size'] > 2*1024*1024){
 		exit(json_encode(array("status"=>"fail","errMsg"=>"file too large")));
 	}
 	$exename = getExeName($_FILES['file']['name']);

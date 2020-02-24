@@ -403,6 +403,10 @@
 			$("#bar_customer_query").click(function(){
 				window.open("customer_query/index.html");
 			});
+
+			$("#bar_charts").click(function(){
+				window.open("customer_assess/index.html");
+			});
 			
 			$("#btn_export").click(function(){
 				if($("#start_time_start").val() == "" && $("#start_time_end").val()== "" && $("#end_time_start").val() == "" && $("#end_time_end").val() == ""){
@@ -820,6 +824,7 @@
 			<div id="bar_export" class="bar_item">工单导出</div>
 			<div class="bar_head"><b>工具箱</b></div>
 			<div id="bar_customer_query" class="bar_item">客户查询</div>
+			<div id="bar_charts" class="bar_item">统计图表</div>
 	</div>
 	<div id="container">
 		<div id="search_container" class="hidden">

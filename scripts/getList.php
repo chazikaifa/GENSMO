@@ -1,5 +1,8 @@
 <?php
 header("Content-Type: text/html;charset=utf-8");
+header("Access-Control-Allow-Origin: *"); 
+header('Access-Control-Allow-Methods:POST');
+header('Access-Control-Allow-Headers:x-requested-with,content-type');
 $id = $_POST['id'];
 $name = $_POST['name'];
 $start_time_start = $_POST['start_time_start'];
@@ -66,7 +69,10 @@ if($condition != ""){
 	$condition = substr($condition,0,strlen($condition)-4);
 	$condition = "WHERE ".$condition;
 }
-$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `create_time` DESC LIMIT '.$index.','.$limit ;
+$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `create_time` DESC';
+if($limit != '' && $index != ''){
+	$sql .= ' LIMIT '.$index.','.$limit;
+}
 //exit($sql);
 $result = mysqli_query($conn, $sql);
 if(!$result){
