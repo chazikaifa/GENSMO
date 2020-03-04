@@ -4,6 +4,8 @@ header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Methods:POST');
 header('Access-Control-Allow-Headers:x-requested-with,content-type');
 
+ini_set('memory_limit','256M');
+
 require '../../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -205,15 +207,25 @@ function is_TOPN($json){
 	$data = curl_exec($curl);
 	curl_close($curl);
 	$res = json_decode($data);
+	$json['assess_TOPN'] = 0;
+	$json['TOP33'] = 0;
+	$json['TOP160'] = 0;
+	$json['TOP800'] = 0;
+	$json['TOP210'] = 0;
+	$json['TOPN'] = 0;
 	if($res->status == 'success'){
 		if($res->result == 'true'){
 			$json['assess_TOPN'] = 1;
 			$json['level'] = $res->level;
-		}else{
-			$json['assess_TOPN'] = 0;
+			switch ($res->mark) {
+				case 'TOP33':
+				case 'TOP160':
+				case 'TOP210':
+				case 'TOP800':
+					$json[$res->mark] = 1;
+					$json['TOPN'] = 1;
+			}
 		}
-	}else{
-		//error
 	}
 	return $json;
 }
@@ -299,7 +311,7 @@ if(!empty($_FILES['file'])){
 	if(move_uploaded_file($_FILES['file']['tmp_name'],$SavePath)){
 		//读取excel
 		$spreadsheet = IOFactory::load($SavePath);
-		$sheet = $spreadsheet -> getSheet(0);
+		$sheet = $spreadsheet -> getSheetByName('基础数据');
 		$rows = $sheet -> getRowIterator();
 		$titleRow = $rows -> current();
 		$rows -> next();

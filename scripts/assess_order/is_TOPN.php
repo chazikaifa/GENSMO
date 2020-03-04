@@ -6,6 +6,11 @@ header('Access-Control-Allow-Headers:x-requested-with,content-type');
 
 if(isset($_POST['name'])){
 	$name = $_POST['name'];
+	if(isset($_POST['mark'])){
+		$mark = $_POST['mark'];
+	}else{
+		$mark = NULL;
+	}
 }else{
 	exit(json_encode(array("status" => "error","errMsg" => 'name not set!')));
 }
@@ -20,8 +25,11 @@ if(! $conn ){
 }
 mysqli_query($conn , "set names utf8");
 mysqli_select_db($conn,'GENSMO');
-
-$sql = "SELECT `level` FROM `assess_customer` WHERE `name` LIKE '$name' OR `unify_name` LIKE '$name'";
+if(is_null($mark)){
+	$sql = "SELECT `level`,UPPER(`mark`) as mark FROM `assess_customer` WHERE `name` LIKE '$name' OR `unify_name` LIKE '$name'";
+}else{
+	$sql = "SELECT `level`,UPPER(`mark`) as mark FROM `assess_customer` WHERE (`name` LIKE '$name' OR `unify_name` LIKE '$name') AND LOWER(`mark`) LIKE LOWER('$mark')";
+}
 
 $result = mysqli_query($conn, $sql);
 if($result){

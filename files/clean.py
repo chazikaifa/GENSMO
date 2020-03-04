@@ -1,5 +1,5 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
+#!D:\python\python.exe
+#-*- coding:utf-8 -*-
 import os
 import datetime
 rootdir =  "D:/wamp64/www/GENSMO/files/";

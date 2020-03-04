@@ -422,7 +422,7 @@
 						step = step + "未结单|";
 					}
 					if($("#step_suspend")[0].checked){
-						step = step + "挂起|";
+						step = step + "挂起中|";
 					}
 					if($("#step_cancel")[0].checked){
 						step = step + "已撤销|";
