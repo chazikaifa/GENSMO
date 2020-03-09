@@ -40,7 +40,7 @@ $title_msg = [
 	new TitleItem('start_time',['受理时间']),
 	new TitleItem('end_time',['销障时间']),
 	new TitleItem('time',['业务恢复历时（分钟）']),
-	new TitleItem('net_duration',['业务恢复净历时（分钟）']),
+	new TitleItem('net_duration',['故障处理净历时（分钟）']),
 	new TitleItem('reason',['故障原因']),
 	new TitleItem('trouble_reason_symptom',['故障原因简述']),
 	new TitleItem('trouble_position',['故障段落']),
@@ -252,6 +252,7 @@ function judgeTimetLimit($json){
 	$level = $json['level'];
 	$time = (int)$json['time'];
 	$json['time'] = $time;
+	$json['assessment_time'] = $time;
 	if($TOPN){
 		switch ($trouble_type) {
 			case '语音业务':
