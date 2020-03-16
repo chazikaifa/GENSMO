@@ -273,7 +273,7 @@
 					let template = show_template.clone();
 					let show_index = template.find("#index");
 					let show_mark = template.find("#mark");
-					let show_time = template.find("#time");
+					let show_time = template.find("#process_time");
 					let content = template.find("#div_template");
 					let btn_minus = template.find("#btn_minus");
 
@@ -670,10 +670,10 @@
 			}
 			if (GetQueryString("id") == null) {
 				//新建工单
+
 				$("#name").removeAttr("disabled");
 				$("#start_time").removeAttr("disabled");
 				$("#trouble_symptom").removeAttr("disabled");
-					
 				$("#step").selectOrDie("disable");
 				
 				$("#start_time").jeDate({
@@ -1158,31 +1158,31 @@
 			<div class="item">
 				<div class="key">故障单编号</div>
 				<div class="value">
-					<input id="id" type="text" value="" disabled />
+					<input id="id" type="text" value="" autocomplete="off" disabled />
 				</div>
 			</div>
 			<div class="item">
 				<div class="key">*客户名称</div>
 				<div class="value">
-					<input id="name" type="text" value="" disabled />
+					<input id="name" type="text" value="" autocomplete="off" disabled />
 				</div>
 			</div>
 			<div class="item half">
 				<div class="key">*开始时间</div>
 				<div class="value">
-					<input id="start_time" type="text" value="" disabled />
+					<input id="start_time" type="text" value="" autocomplete="off" disabled />
 				</div>
 			</div>
 			<div class="item half">
 				<div class="key">恢复时间</div>
 				<div class="value">
-					<input id="end_time" type="text" value="" disabled />
+					<input id="end_time" type="text" value="" autocomplete="off" disabled />
 				</div>
 			</div>
 			<div class="item half">
 				<div class="key">历时(分钟)</div>
 				<div class="value">
-					<input id="time" type="text" value="" disabled />
+					<input id="time" type="text" value="" autocomplete="off" disabled />
 				</div>
 			</div>
 			<div class="item half">
@@ -1199,31 +1199,31 @@
 			<div class="item">
 				<div class="key">故障简述</div>
 				<div class="value">
-					<input id="trouble_symptom" type="text" value="" />
+					<input id="trouble_symptom" type="text" autocomplete="off" value="" />
 				</div>
 			</div>
 			<div class="item half">
 				<div class="key">19工单编号</div>
 				<div class="value">
-					<input id="link_id" type="text" value="" />
+					<input id="link_id" type="text" autocomplete="off" value="" />
 				</div>
 			</div>
 			<div class="item half">
 				<div class="key">电路编号</div>
 				<div class="value">
-					<input id="circuit_number" type="text" value="" />
+					<input id="circuit_number" type="text" autocomplete="off" value="" />
 				</div>
 			</div>
 			<div class="item half">
 				<div class="key">客户联系方式</div>
 				<div class="value">
-					<input id="contact_number" type="text" value="" />
+					<input id="contact_number" type="text" autocomplete="off" value="" />
 				</div>
 			</div>
 			<div class="item half">
 				<div class="key">客户姓名</div>
 				<div class="value">
-					<input id="contact_name" type="text" value="" />
+					<input id="contact_name" type="text" autocomplete="off" value="" />
 				</div>
 			</div>
 			<div class="item half">
@@ -1327,7 +1327,7 @@
 							<div id="index" class="process_index">
 								1
 							</div>
-							<textarea id="textarea_template" rows="1"></textarea>
+							<textarea id="textarea_template" autocomplete="off" rows="1"></textarea>
 							<img id="btn_minus" class="btn_img" src="img/minus.png"/>
 						</li>
 						<li id="show_template" class="process_item" index="-1">
@@ -1339,7 +1339,7 @@
 								<option value="unset_suspend">解挂</option>
 								<option value="">进展</option>
 							</select>
-							<input id="time" class="process_time" type="text" value=""/>
+							<input id="process_time" class="process_time" autocomplete="off" type="text" value=""/>
 							<div id="div_template" class="process_content"></div>
 							<img id="btn_minus" class="btn_img" src="img/minus.png"/>
 						</li>
@@ -1352,7 +1352,7 @@
 			<div class="item textarea">
 				<div class="key">备注</div>
 				<div class="value textarea">
-					<textarea id="remark" ></textarea>
+					<textarea id="remark" autocomplete="off"></textarea>
 				</div>
 			</div>
 			<div class="item">

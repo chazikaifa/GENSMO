@@ -36,8 +36,19 @@ function getSQL($titles, $values){
 	$sql .= ') VALUES (NULL,';
 	for($i = 0;$i < sizeof($titles);$i++){
 		if($titles[$i] != "pass"){
-			if($titles[$i] == 'unify_name' && $values[$i] == ''){
-				return '';
+			if($titles[$i] == 'unify_name'){
+				if($values[$i] == ''){
+					return '';
+				}else{
+					$values[$i] = str_replace("\n", "", $values[$i]);
+					$values[$i] = str_replace("\t", "", $values[$i]);
+					$values[$i] = str_replace("\r", "", $values[$i]);
+				}
+			}
+			if($titles[$i] == 'name'){
+				$values[$i] = str_replace("\n", "", $values[$i]);
+				$values[$i] = str_replace("\t", "", $values[$i]);
+				$values[$i] = str_replace("\r", "", $values[$i]);
 			}
 			$v = $values[$i];
 			if(!is_null($v)){
