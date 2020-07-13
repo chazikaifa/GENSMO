@@ -6,7 +6,7 @@ rootdir =  "D:/wamp64/www/GENSMO/files/";
 list = os.listdir(rootdir);
 sum = 0;
 for file in list:
-	if file.split('.')[-1] == 'xlsx':
+	if file.split('.')[-1] == 'xlsx' or file.split('.')[-1] == 'docx':
 		if len(file.split('-')) > 1:
 			dateStr = file.split('-')[0]
 			d = datetime.datetime.strptime(dateStr,'%Y%m%d')

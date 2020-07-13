@@ -3,29 +3,51 @@ header("Content-Type: text/html;charset=utf-8");
 header("Access-Control-Allow-Origin: *"); 
 header('Access-Control-Allow-Methods:POST');
 header('Access-Control-Allow-Headers:x-requested-with,content-type');
-$id = $_POST['id'];
-$name = $_POST['name'];
-$start_time_start = $_POST['start_time_start'];
-$start_time_end = $_POST['start_time_end'];
-$end_time_start = $_POST['end_time_start'];
-$end_time_end = $_POST['end_time_end'];
-$number = $_POST['number'];
-$index = $_POST['index'];
-$limit = $_POST['limit'];
-if(isset($_POST['step'])){
-	$step = $_POST['step'];
-	$step = explode("|",$step);
-}else{
-	$step = [""];
+$param_name = ['id','name','start_time_start','start_time_end','end_time_start','end_time_end','number','index','limit','step'];
+$param = array();
+foreach($param_name as $index => $name){
+	if(isset($_POST[$name])){
+		if($name == 'step'){
+			$param[$name] = $_POST['step'];
+			$param[$name] = explode("|",$param[$name]);
+		}else{
+			$param[$name] = $_POST[$name];
+		}
+	}else{
+		if($name == 'step'){
+			$param[$name] = [];
+		}else{
+			$param[$name] = '';
+		}
+	}
 }
+
+$id = $param['id'];
+$name = $param['name'];
+$start_time_start = $param['start_time_start'];
+$start_time_end = $param['start_time_end'];
+$end_time_start = $param['end_time_start'];
+$end_time_end = $param['end_time_end'];
+$number = $param['number'];
+$index = $param['index'];
+$limit = $param['limit'];
+$step = $param['step'];
+
+if($index == '' && $limit != ''){
+	$index = 0;
+}
+if($index != '' && $limit == ''){
+	$index = '';
+}
+
 $dbhost = 'localhost';  // mysql服务器主机地址
 $dbuser = 'gensmo';            // mysql用户名
 $dbpass = 'SoSF701TmkYrGY8m';          // mysql用户名密码
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass);
 if(! $conn )
 {
-	//$message = array("status" => "error","result" => mysqli_error());
-	die(mysqli_error());
+	$res = array("status" => "error","errMsg" => 'mysql error: '.mysqli_error($conn));
+	exit(json_encode($res));
 }
 mysqli_query($conn , "set names utf8");
 mysqli_select_db($conn,'GENSMO');
@@ -76,8 +98,8 @@ if($limit != '' && $index != ''){
 //exit($sql);
 $result = mysqli_query($conn, $sql);
 if(!$result){
-	//$message = array("status" => "error","result" => mysqli_error());
-	die(mysqli_error($conn));
+	$res = array("status" => "error","errMsg" => 'mysql error: '.mysqli_error($conn));
+	exit(json_encode($res));
 }else{
 	$row_number = mysqli_fetch_row(mysqli_query($conn,"SELECT FOUND_ROWS()"))[0];
 	$resList = array();
