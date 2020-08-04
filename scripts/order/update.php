@@ -36,31 +36,33 @@ $param_name[1] = 'name';
 $param_name[2] = 'start_time';
 $param_name[3] = 'end_time';
 $param_name[4] = 'time';
-$param_name[5] = 'step';
-$param_name[6] = 'trouble_symptom';
-$param_name[7] = 'link_id';
-$param_name[8] = 'process';
-$param_name[9] = 'circuit_number';
-$param_name[10] = 'contact_number';
-$param_name[11] = 'contact_name';
-$param_name[12] = 'area';
-$param_name[13] = 'is_trouble';
-$param_name[14] = 'is_remote';
-$param_name[15] = 'trouble_class';
-$param_name[16] = 'trouble_reason';
-$param_name[17] = 'business_type';
-$param_name[18] = 'remark';
-$param_name[19] = 'major';
-$param_name[20] = 'roomName';
-$param_name[21] = 'roomType';
-$param_name[22] = 'hiddenDanger';
-$param_name[23] = 'reasonDescription';
+$param_name[5] = 'time_limit';
+$param_name[6] = 'net_duration';
+$param_name[7] = 'step';
+$param_name[8] = 'trouble_symptom';
+$param_name[9] = 'link_id';
+$param_name[10] = 'process';
+$param_name[11] = 'circuit_number';
+$param_name[12] = 'contact_number';
+$param_name[13] = 'contact_name';
+$param_name[14] = 'area';
+$param_name[15] = 'is_trouble';
+$param_name[16] = 'is_remote';
+$param_name[17] = 'trouble_class';
+$param_name[18] = 'trouble_reason';
+$param_name[19] = 'business_type';
+$param_name[20] = 'remark';
+$param_name[21] = 'major';
+$param_name[22] = 'roomName';
+$param_name[23] = 'roomType';
+$param_name[24] = 'hiddenDanger';
+$param_name[25] = 'reasonDescription';
 
 $param = array();
 
 foreach($param_name as $index => $name){
   if(isset($_POST[$name])){
-    if(($name == 'end_time'||$name == 'time'||$name == 'is_trouble'||$name == 'is_remote'||$name == 'link_id'||$name == 'roomName'||$name == 'roomType'||$name == 'hiddenDanger'||$name == 'reasonDescription')&&$_POST[$name] == ''){
+    if(($name == 'end_time'||$name == 'time'||$name == 'net_duration'||$name == 'is_trouble'||$name == 'is_remote'||$name == 'link_id'||$name == 'roomName'||$name == 'roomType'||$name == 'hiddenDanger'||$name == 'reasonDescription')&&$_POST[$name] == ''){
       $param[$name] = null;
     }else{
       $param[$name] = $_POST[$name];

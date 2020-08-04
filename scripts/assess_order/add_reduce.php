@@ -66,7 +66,11 @@ if($assess_time > $time_limit){
 }
 
 if($province != ''){
-  $sql = "UPDATE `assess_order` SET `responsible_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout WHERE `orderID`='$id'";
+  if($province == '用户'){
+    $sql = "UPDATE `assess_order` SET `responsible_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`is_assess`='0' WHERE `orderID`='$id'";
+  }else{
+    $sql = "UPDATE `assess_order` SET `responsible_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`is_assess`='1' WHERE `orderID`='$id'";
+  }
 }else{
   $sql = "UPDATE `assess_order` SET `reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout WHERE `orderID`='$id'";
 }

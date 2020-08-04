@@ -99,7 +99,7 @@ if($condition != ""){
   $condition = substr($condition,0,strlen($condition)-4);
   $condition = "WHERE ".$condition;
 }
-$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `create_time` ASC' ;
+$sql = 'SELECT SQL_CALC_FOUND_ROWS `order`.*,`assess_customer`.`mark` FROM `order` LEFT JOIN `assess_customer` on `order`.`name`=`assess_customer`.`name` '. $condition .'ORDER BY `create_time` DESC';
 //exit($sql);
 $result = mysqli_query($conn, $sql);
 if(!$result){
@@ -126,13 +126,14 @@ if(!$result){
   $sheet->setCellValueByColumnAndRow(12,1, '客户联系人');
   $sheet->setCellValueByColumnAndRow(13,1, '区域');
   $sheet->setCellValueByColumnAndRow(14,1, '是否故障');
-  $sheet->setCellValueByColumnAndRow(15,1, '是否对端');
+  $sheet->setCellValueByColumnAndRow(15,1, '是否客户原因');
   $sheet->setCellValueByColumnAndRow(16,1, '故障分类');
   $sheet->setCellValueByColumnAndRow(17,1, '原因细化');
   $sheet->setCellValueByColumnAndRow(18,1, '行业类型');
   $sheet->setCellValueByColumnAndRow(19,1, '责任专业');
   $sheet->setCellValueByColumnAndRow(20,1, '备注');
-  $sheet->setCellValueByColumnAndRow(21,1, '统一标识');
+  $sheet->setCellValueByColumnAndRow(21,1, '客户标记');
+  $sheet->setCellValueByColumnAndRow(22,1, '统一标识');
   
   $i = 2;
   
@@ -191,17 +192,18 @@ if(!$result){
     }
     $sheet->setCellValueByColumnAndRow(14,$i, $is_trouble);
     
-    if($row['is_remote'] == 0){
-      $is_remote = '否';
+    if($row['is_customer'] == 0){
+      $is_customer = '否';
     }else{
-      $is_remote = '是';
+      $is_customer = '是';
     }
-    $sheet->setCellValueByColumnAndRow(15,$i, $is_remote);
+    $sheet->setCellValueByColumnAndRow(15,$i, $is_customer);
     $sheet->setCellValueByColumnAndRow(16,$i, $row['trouble_class']);
     $sheet->setCellValueByColumnAndRow(17,$i, $row['trouble_reason']);
     $sheet->setCellValueByColumnAndRow(18,$i, $row['business_type']);
     $sheet->setCellValueByColumnAndRow(19,$i, $row['major']);
     $sheet->setCellValueByColumnAndRow(20,$i, $row['remark']);
+    $sheet->setCellValueByColumnAndRow(21,$i, $row['mark']);
 
     $unify_mark .= $row['area'].'|';
     $unify_mark .= $row['roomName'].'|';
@@ -209,7 +211,7 @@ if(!$result){
     $unify_mark .= $row['reasonDescription'].'|';
     $unify_mark .= $row['process'].'|';
     $unify_mark .= $row['hiddenDanger'].'}';
-    $sheet->setCellValueByColumnAndRow(21,$i, $unify_mark);
+    $sheet->setCellValueByColumnAndRow(22,$i, $unify_mark);
 
     $i++;
   }

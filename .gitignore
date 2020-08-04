@@ -1,4 +1,9 @@
 
-*.xlsx
-files/clean_log.txt
-files/clean_log.txt
+files/*.xlsx
+files/*.docx
+vendor/
+js/
+css/
+fonts/
+favicon.ico
+index.html

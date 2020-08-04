@@ -74,29 +74,29 @@ if($index != '' && $limit == ''){
 
 $condition = "";
 if($id != ""){
-  $condition .= "`id` LIKE '%$id%' AND " ;
+  $condition .= "`order`.`id` LIKE '%$id%' AND " ;
 }
 if($name != ""){
-  $condition .= "`name` LIKE '%$name%' AND ";
+  $condition .= "`order`.`name` LIKE '%$name%' AND ";
 }
 if($start_time_start != "" && $start_time_end != ""){
-  $condition .= "`start_time` BETWEEN '$start_time_start' AND '$start_time_end' AND ";
+  $condition .= "`order`.`start_time` BETWEEN '$start_time_start' AND '$start_time_end' AND ";
 }else if($start_time_start != ""){
-  $condition .= "`start_time` >= '$start_time_start' AND ";
+  $condition .= "`order`.`start_time` >= '$start_time_start' AND ";
 }else if($start_time_end != ""){
-  $condition .= "`start_time` <= '$start_time_end' AND ";
+  $condition .= "`order`.`start_time` <= '$start_time_end' AND ";
 }
 if($end_time_start != "" && $end_time_end != ""){
-  $condition .= "`end_time` BETWEEN '$end_time_start' AND '$end_time_end' AND ";
+  $condition .= "`order`.`end_time` BETWEEN '$end_time_start' AND '$end_time_end' AND ";
 }else if($end_time_start != ""){
-  $condition .= "`end_time` >= '$end_time_start' AND ";
+  $condition .= "`order`.`end_time` >= '$end_time_start' AND ";
 }else if($end_time_end != ""){
-  $condition .= "`end_time` <= '$end_time_end' AND ";
+  $condition .= "`order`.`end_time` <= '$end_time_end' AND ";
 }
 if(count($step) > 1 || $step[0] != ''){
   $step_sql = "(";
   foreach($step as $s){
-    $step_sql .="`step` LIKE '$s' OR ";
+    $step_sql .="`order`.`step` LIKE '$s' OR ";
   }
   $step_sql = substr($step_sql,0,strlen($step_sql)-3);
   $step_sql .= ")";
@@ -104,14 +104,14 @@ if(count($step) > 1 || $step[0] != ''){
 }
 
 if($number != ""){
-  $condition .= "`circuit_number` LIKE '%$number%' AND ";
+  $condition .= "`order`.`circuit_number` LIKE '%$number%' AND ";
 }
 
 if($condition != ""){
   $condition = substr($condition,0,strlen($condition)-4);
   $condition = "WHERE ".$condition;
 }
-$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `order` '. $condition .'ORDER BY `create_time` DESC';
+$sql = 'SELECT SQL_CALC_FOUND_ROWS `order`.*,`assess_customer`.`mark` FROM `order` LEFT JOIN `assess_customer` on `order`.`name`=`assess_customer`.`name` '. $condition .'ORDER BY `create_time` DESC';
 if($limit != '' && $index != ''){
   $sql .= ' LIMIT '.$index.','.$limit;
 }
