@@ -117,23 +117,25 @@ if(!$result){
   $sheet->setCellValueByColumnAndRow(3,1, '故障受理时间');
   $sheet->setCellValueByColumnAndRow(4,1, '故障修复时间');
   $sheet->setCellValueByColumnAndRow(5,1, '故障历时(分钟)');
-  $sheet->setCellValueByColumnAndRow(6,1, '工单状态');
-  $sheet->setCellValueByColumnAndRow(7,1, '故障简述');
-  $sheet->setCellValueByColumnAndRow(8,1, '19工单编号');
-  $sheet->setCellValueByColumnAndRow(9,1, '故障进展');
-  $sheet->setCellValueByColumnAndRow(10,1, '电路编号');
-  $sheet->setCellValueByColumnAndRow(11,1, '客户联系方式');
-  $sheet->setCellValueByColumnAndRow(12,1, '客户联系人');
-  $sheet->setCellValueByColumnAndRow(13,1, '区域');
-  $sheet->setCellValueByColumnAndRow(14,1, '是否故障');
-  $sheet->setCellValueByColumnAndRow(15,1, '是否客户原因');
-  $sheet->setCellValueByColumnAndRow(16,1, '故障分类');
-  $sheet->setCellValueByColumnAndRow(17,1, '原因细化');
-  $sheet->setCellValueByColumnAndRow(18,1, '行业类型');
-  $sheet->setCellValueByColumnAndRow(19,1, '责任专业');
-  $sheet->setCellValueByColumnAndRow(20,1, '备注');
-  $sheet->setCellValueByColumnAndRow(21,1, '客户标记');
-  $sheet->setCellValueByColumnAndRow(22,1, '统一标识');
+  $sheet->setCellValueByColumnAndRow(6,1, '故障净历时(分钟)');
+  $sheet->setCellValueByColumnAndRow(7,1, '故障恢复时限');  
+  $sheet->setCellValueByColumnAndRow(8,1, '工单状态');
+  $sheet->setCellValueByColumnAndRow(9,1, '故障简述');
+  $sheet->setCellValueByColumnAndRow(10,1, '19工单编号');
+  $sheet->setCellValueByColumnAndRow(11,1, '故障进展');
+  $sheet->setCellValueByColumnAndRow(12,1, '电路编号');
+  $sheet->setCellValueByColumnAndRow(13,1, '客户联系方式');
+  $sheet->setCellValueByColumnAndRow(14,1, '客户联系人');
+  $sheet->setCellValueByColumnAndRow(15,1, '区域');
+  $sheet->setCellValueByColumnAndRow(16,1, '是否故障');
+  $sheet->setCellValueByColumnAndRow(17,1, '是否客户原因');
+  $sheet->setCellValueByColumnAndRow(18,1, '故障分类');
+  $sheet->setCellValueByColumnAndRow(19,1, '原因细化');
+  $sheet->setCellValueByColumnAndRow(20,1, '行业类型');
+  $sheet->setCellValueByColumnAndRow(21,1, '责任专业');
+  $sheet->setCellValueByColumnAndRow(22,1, '备注');
+  $sheet->setCellValueByColumnAndRow(23,1, '客户标记');
+  $sheet->setCellValueByColumnAndRow(24,1, '统一标识');
   
   $i = 2;
   
@@ -143,9 +145,12 @@ if(!$result){
     $sheet->setCellValueByColumnAndRow(3,$i, $row['start_time']);
     $sheet->setCellValueByColumnAndRow(4,$i, $row['end_time']);
     $sheet->setCellValueByColumnAndRow(5,$i, $row['time']);
-    $sheet->setCellValueByColumnAndRow(6,$i, $row['step']);
-    $sheet->setCellValueByColumnAndRow(7,$i, $row['trouble_symptom']);
-    $sheet->setCellValueByColumnAndRow(8,$i, $row['link_id']);
+    $sheet->setCellValueByColumnAndRow(6,$i, $row['net_duration']);
+    $sheet->setCellValueByColumnAndRow(7,$i, $row['time_limit']);
+
+    $sheet->setCellValueByColumnAndRow(8,$i, $row['step']);
+    $sheet->setCellValueByColumnAndRow(9,$i, $row['trouble_symptom']);
+    $sheet->setCellValueByColumnAndRow(10,$i, $row['link_id']);
     
     $process = '';
     
@@ -174,12 +179,12 @@ if(!$result){
     }
     mysqli_close($conn_p);
 
-    $sheet->setCellValueByColumnAndRow(9,$i, $process);
+    $sheet->setCellValueByColumnAndRow(11,$i, $process);
     
-    $sheet->setCellValueByColumnAndRow(10,$i, $row['circuit_number']);
-    $sheet->setCellValueByColumnAndRow(11,$i, $row['contact_number']);
-    $sheet->setCellValueByColumnAndRow(12,$i, $row['contact_name']);
-    $sheet->setCellValueByColumnAndRow(13,$i, $row['area']);
+    $sheet->setCellValueByColumnAndRow(12,$i, $row['circuit_number']);
+    $sheet->setCellValueByColumnAndRow(13,$i, $row['contact_number']);
+    $sheet->setCellValueByColumnAndRow(14,$i, $row['contact_name']);
+    $sheet->setCellValueByColumnAndRow(15,$i, $row['area']);
     
     $unify_mark = '{';
 
@@ -190,20 +195,20 @@ if(!$result){
       $is_trouble = '是';
       $unify_mark .= $row['trouble_class'].'-'.$row['trouble_reason'].'|';
     }
-    $sheet->setCellValueByColumnAndRow(14,$i, $is_trouble);
+    $sheet->setCellValueByColumnAndRow(16,$i, $is_trouble);
     
     if($row['is_customer'] == 0){
       $is_customer = '否';
     }else{
       $is_customer = '是';
     }
-    $sheet->setCellValueByColumnAndRow(15,$i, $is_customer);
-    $sheet->setCellValueByColumnAndRow(16,$i, $row['trouble_class']);
-    $sheet->setCellValueByColumnAndRow(17,$i, $row['trouble_reason']);
-    $sheet->setCellValueByColumnAndRow(18,$i, $row['business_type']);
-    $sheet->setCellValueByColumnAndRow(19,$i, $row['major']);
-    $sheet->setCellValueByColumnAndRow(20,$i, $row['remark']);
-    $sheet->setCellValueByColumnAndRow(21,$i, $row['mark']);
+    $sheet->setCellValueByColumnAndRow(17,$i, $is_customer);
+    $sheet->setCellValueByColumnAndRow(18,$i, $row['trouble_class']);
+    $sheet->setCellValueByColumnAndRow(19,$i, $row['trouble_reason']);
+    $sheet->setCellValueByColumnAndRow(20,$i, $row['business_type']);
+    $sheet->setCellValueByColumnAndRow(21,$i, $row['major']);
+    $sheet->setCellValueByColumnAndRow(22,$i, $row['remark']);
+    $sheet->setCellValueByColumnAndRow(23,$i, $row['mark']);
 
     $unify_mark .= $row['area'].'|';
     $unify_mark .= $row['roomName'].'|';
@@ -211,7 +216,7 @@ if(!$result){
     $unify_mark .= $row['reasonDescription'].'|';
     $unify_mark .= $row['process'].'|';
     $unify_mark .= $row['hiddenDanger'].'}';
-    $sheet->setCellValueByColumnAndRow(22,$i, $unify_mark);
+    $sheet->setCellValueByColumnAndRow(24,$i, $unify_mark);
 
     $i++;
   }
