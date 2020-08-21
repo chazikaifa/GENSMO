@@ -46,6 +46,7 @@ $title_msg = [
   new TitleItem('trouble_position',['故障段落']),
   new TitleItem('province',['（地市）']),
   new TitleItem('handle_unit',['主要处理部门']),
+  new TitleItem('remark',['故障申告备注']),
 ];
 
 $circuit_pass = ['待用户填写','无','客户无法提供','-','无法提供','','不清楚','用户无法提供'];
@@ -246,6 +247,20 @@ function is_TOPN($json){
           $json['TOPN'] = 1;
       }
     }
+  }
+  //增加工单备注的参考
+  $mark = $json['remark'];
+  if(preg_match('/TOP55/', $mark)){
+    $json['TOP33'] = 1;
+    $json['TOP800'] = 1;
+    $json['assess_TOPN'] = 1;
+  }else{
+    $json['TOP33'] = 0;
+  }
+  if(preg_match('/TOP800/', $mark)){
+    $json['assess_TOPN'] = 1;
+  }else{
+    $json['assess_TOPN'] = 0;
   }
   return $json;
 }

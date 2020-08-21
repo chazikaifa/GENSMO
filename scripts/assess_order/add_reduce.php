@@ -36,6 +36,11 @@ $param_name[1] = 'province';
 $param_name[2] = 'time';
 $param_name[3] = 'reduce_time';
 $param_name[4] = 'time_limit';
+$param_name[5] = 'TOP33';
+$param_name[6] = 'TOP210';
+$param_name[7] = 'TOP800';
+$param_name[8] = 'TOPN';
+$param_name[9] = 'assess_TOPN';
 
 $param = array();
 
@@ -59,6 +64,12 @@ $time = $param['time'];
 $reduce_time = $param['reduce_time'];
 $time_limit = (int)$param['time_limit'];
 $assess_time = (int)($time) - (int)($reduce_time);
+$TOP33 = $param['TOP33'];
+$TOP210 = $param['TOP210'];
+$TOP800 = $param['TOP800'];
+$TOPN = $param['TOPN'];
+$assess_TOPN = $param['assess_TOPN'];
+
 if($assess_time > $time_limit){
   $timeout = 1;
 }else{
@@ -67,13 +78,16 @@ if($assess_time > $time_limit){
 
 if($province != ''){
   if($province == '用户'){
-    $sql = "UPDATE `assess_order` SET `responsible_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`is_assess`='0' WHERE `orderID`='$id'";
+    $sql = "UPDATE `assess_order` SET `responsible_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`is_assess`='0',`time_limit`=$time_limit,`TOP33`=$TOP33,`TOP210`=$TOP210,`TOP800`=$TOP800,`TOPN`=$TOPN,`assess_TOPN`=$assess_TOPN WHERE `orderID`='$id'";
   }else{
-    $sql = "UPDATE `assess_order` SET `responsible_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`is_assess`='1' WHERE `orderID`='$id'";
+    $sql = "UPDATE `assess_order` SET `responsible_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`is_assess`='1',`time_limit`=$time_limit,`TOP33`=$TOP33,`TOP210`=$TOP210,`TOP800`=$TOP800,`TOPN`=$TOPN,`assess_TOPN`=$assess_TOPN WHERE `orderID`='$id'";
   }
 }else{
-  $sql = "UPDATE `assess_order` SET `reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout WHERE `orderID`='$id'";
+  $sql = "UPDATE `assess_order` SET `reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`time_limit`=$time_limit,`TOP33`=$TOP33,`TOP210`=$TOP210,`TOP800`=$TOP800,`TOPN`=$TOPN,`assess_TOPN`=$assess_TOPN WHERE `orderID`='$id'";
 }
+
+// $res = array("status" => "error","errMsg" => $sql);
+// exit(json_encode($res));
 
 $result = mysqli_query($conn, $sql);
 if(!$result){
