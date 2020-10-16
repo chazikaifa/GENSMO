@@ -52,9 +52,9 @@ if(isset($_POST['province'])){
   $province = '';
 }
 if($province != ''){
-  $sql = "SELECT * from  `assess_order` where end_time BETWEEN '$start' AND '$end' AND `province` LIKE '$province'";
+  $sql = "SELECT * from  `assess_order` where `system_end_time` BETWEEN '$start' AND '$end' AND `province` LIKE '$province'";
 }else{
-  $sql = "SELECT * from  `assess_order` where end_time BETWEEN '$start' AND '$end'";
+  $sql = "SELECT * from  `assess_order` where `system_end_time` BETWEEN '$start' AND '$end'";
 }
 
 

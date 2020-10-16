@@ -67,29 +67,29 @@ $step = $param['step'];
 
 $condition = "";
 if($id != ""){
-  $condition .= "`id` LIKE '%$id%' AND " ;
+  $condition .= "`order`.`id` LIKE '%$id%' AND " ;
 }
 if($name != ""){
-  $condition .= "`name` LIKE '%$name%' AND ";
+  $condition .= "`order`.`name` LIKE '%$name%' AND ";
 }
 if($start_time_start != "" && $start_time_end != ""){
-  $condition .= "`start_time` BETWEEN '$start_time_start' AND '$start_time_end' AND ";
+  $condition .= "`order`.`start_time` BETWEEN '$start_time_start' AND '$start_time_end' AND ";
 }else if($start_time_start != ""){
-  $condition .= "`start_time` >= '$start_time_start' AND ";
+  $condition .= "`order`.`start_time` >= '$start_time_start' AND ";
 }else if($start_time_end != ""){
-  $condition .= "`start_time` <= '$start_time_end' AND ";
+  $condition .= "`order`.`start_time` <= '$start_time_end' AND ";
 }
 if($end_time_start != "" && $end_time_end != ""){
-  $condition .= "`end_time` BETWEEN '$end_time_start' AND '$end_time_end' AND ";
+  $condition .= "`order`.`end_time` BETWEEN '$end_time_start' AND '$end_time_end' AND ";
 }else if($end_time_start != ""){
-  $condition .= "`end_time` >= '$end_time_start' AND ";
+  $condition .= "`order`.`end_time` >= '$end_time_start' AND ";
 }else if($end_time_end != ""){
-  $condition .= "`end_time` <= '$end_time_end' AND ";
+  $condition .= "`order`.`end_time` <= '$end_time_end' AND ";
 }
 if(count($step) > 1 || $step[0] != ''){
   $step_sql = "(";
   foreach($step as $s){
-    $step_sql .="`step` LIKE '$s' OR ";
+    $step_sql .="`order`.`step` LIKE '$s' OR ";
   }
   $step_sql = substr($step_sql,0,strlen($step_sql)-3);
   $step_sql .= ")";

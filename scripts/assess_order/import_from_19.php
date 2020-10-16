@@ -26,6 +26,7 @@ class TitleItem{
   }
 }
 
+//TitleItem中$index为数组，可以实现功能：以数组内的标题列作数据内容，当存在多列时，以不为空的，且排在后面的列为准
 $title_msg = [
   new TitleItem('orderId',['故障单编号']),
   new TitleItem('step',['当前步骤']),
@@ -47,6 +48,7 @@ $title_msg = [
   new TitleItem('province',['（地市）']),
   new TitleItem('handle_unit',['主要处理部门']),
   new TitleItem('remark',['故障申告备注']),
+  new TitleItem('system_end_time',['最终销障时间','专席回访结单时间']),
 ];
 
 $circuit_pass = ['待用户填写','无','客户无法提供','-','无法提供','','不清楚','用户无法提供'];
