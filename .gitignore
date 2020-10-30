@@ -1,9 +1,12 @@
 
 files/*.xlsx
+files/*.xls
 files/*.docx
+files/*.doc
 vendor/
 js/
 css/
 fonts/
 favicon.ico
 index.html
+scripts/report/reportData.php

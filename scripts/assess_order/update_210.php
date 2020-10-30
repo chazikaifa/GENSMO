@@ -51,10 +51,10 @@ mysqli_select_db($conn,'GENSMO');
 // }
 // $ids = substr($ids,0,strlen($ids)-1);
 // $sql .= "END WHERE `orderId` IN ($ids)";
-
+$ids = '';
 foreach ($arr as $obj) {
   $key = $obj['orderId'];
-  $ids .= "'$keys',";
+  $ids .= "'$key',";
 }
 $ids = substr($ids,0,strlen($ids)-1);
 $sql = "UPDATE `assess_order` SET `TOP210`= 1 WHERE `orderId` IN ($ids)";
