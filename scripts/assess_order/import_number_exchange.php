@@ -28,7 +28,9 @@ class TitleItem{
 
 $title_msg = [
 	new TitleItem('circuit_number',['电路编号']),
-	new TitleItem('product_number',['BSS计费号码'])
+	new TitleItem('product_number',['BSS计费号码']),
+	new TitleItem('route',['路由']),
+	new TitleItem('name',['客户名称'])
 ];
 
 function getExeName($fileName){
@@ -86,7 +88,7 @@ function new_order($json){
 }
 
 if(!empty($_FILES['file'])){
-	if($_FILES['file']['size'] > 2*1024*1024){
+	if($_FILES['file']['size'] > 5*1024*1024){
 		exit(json_encode(array("status"=>"fail","errMsg"=>"file too large")));
 	}
 	$exename = getExeName($_FILES['file']['name']);
@@ -99,6 +101,11 @@ if(!empty($_FILES['file'])){
 		exit(json_encode(array("status"=>"fail","errMsg"=>"wrong file type")));
 	}
 	
+	if(isset($_POST['skip'])){
+		$skip = $_POST['skip'];
+	}else{
+		$skip = 0;
+	}
 	$SavePath = "../../files/".uniqid().'.'.$exename;
 	if(move_uploaded_file($_FILES['file']['tmp_name'],$SavePath)){
 		//读取excel
@@ -125,14 +132,16 @@ if(!empty($_FILES['file'])){
 		
 		checkIndex($title_msg);
 
-		$sum = 0;
+		$sum = $skip;
 		$empty_count = 0;
+		$rows -> seek($skip+1);
 		while($rows -> valid() && $empty_count < 3){
 			$json = getJSON($rows);
 			if($json){
 				$res = new_order($json);
 				if($res->status == 'success'){
 					$sum++;
+					echo $sum.'<br/>';
 				}else{
 					echo $res->errMsg;
 				}

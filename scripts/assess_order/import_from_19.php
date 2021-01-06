@@ -35,7 +35,7 @@ $title_msg = [
   new TitleItem('level',['客户级别']),
   new TitleItem('trouble_type',['故障业务类型（一级）']),
   new TitleItem('trouble_type2',['（三级）']),
-  new TitleItem('circuit_number',['专线业务－故障电路编号','语音业务－电话号码','互联网业务－互联网专线号']),
+  new TitleItem('circuit_number',['专线业务－故障电路编号','语音业务－电话号码','互联网业务－IP地址','互联网业务－互联网专线号']),
   new TitleItem('trouble_symptom',['故障简述']),
   new TitleItem('trouble_description',['故障描述']),
   new TitleItem('start_time',['受理时间']),
@@ -51,7 +51,7 @@ $title_msg = [
   new TitleItem('system_end_time',['最终销障时间','专席回访结单时间']),
 ];
 
-$circuit_pass = ['待用户填写','无','客户无法提供','-','无法提供','','不清楚','用户无法提供'];
+$circuit_pass = ['待用户填写','无','客户无法提供','-','无法提供','','不清楚','用户无法提供','0','temp_000'];
 
 $customer_reason = ['客户线路','客户动力','客户设备'];
 $trouble_class = ['光缆故障','设备故障','动力配套','电缆故障'];
@@ -345,7 +345,7 @@ if(!empty($_FILES['file'])){
     exit(json_encode(array("status"=>"fail","errMsg"=>"wrong file type")));
   }
   
-  $SavePath = "../../files/".uniqid().'.'.$exename;
+  $SavePath = "../../files/".date('Ymd-').uniqid().'.'.$exename;
   if(move_uploaded_file($_FILES['file']['tmp_name'],$SavePath)){
     //读取excel
     $spreadsheet = IOFactory::load($SavePath);
