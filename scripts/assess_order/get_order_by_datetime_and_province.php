@@ -53,7 +53,7 @@ if(isset($_POST['province'])){
 }
 
 if($province != ''){
-  $sql = 'SELECT `assess_order`.*,`number_exchange`.`product_number` from  `assess_order` LEFT JOIN `number_exchange` on `assess_order`.`circuit_number`=`number_exchange`.`circuit_number` where `province`=\''.$province.'\' AND end_time BETWEEN \''.$start.'\' AND \''.$end.'\'';
+  $sql = 'SELECT `assess_order`.*,`number_exchange`.`product_number` from  `assess_order` LEFT JOIN `number_exchange` on `assess_order`.`circuit_number`=`number_exchange`.`circuit_number` where `responsible_province`=\''.$province.'\' AND end_time BETWEEN \''.$start.'\' AND \''.$end.'\'';
 }else{
   $sql = 'SELECT `assess_order`.*,`number_exchange`.`product_number` from  `assess_order` LEFT JOIN `number_exchange` on `assess_order`.`circuit_number`=`number_exchange`.`circuit_number` where end_time BETWEEN \''.$start.'\' AND \''.$end.'\'';
 }

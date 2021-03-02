@@ -59,6 +59,9 @@ $sql .= ')';
 $sql .= ' ON DUPLICATE KEY UPDATE ';
 foreach ($param_name as $key) {
 	if($key != 'orderId'){
+		if(($key == 'is_trouble' || $key == 'trouble_class' || $key == 'trouble_reason' || $key == 'correct_province')&& $param[$key] == NULL){
+			continue;
+		}
 		$sql .= "$key = VALUES($key),";
 	}
 }

@@ -48,7 +48,7 @@ if(isset($_POST['START'])&&isset($_POST['END'])){
   exit(json_encode($res));
 }
 
-$sql = "SELECT * from  `assess_order` where end_time BETWEEN '$start' AND '$end' AND `province` LIKE '广东省广州市' AND `responsible_province` IN ('广州','用户')";
+$sql = "SELECT * from  `assess_order` where end_time BETWEEN '$start' AND '$end' AND `responsible_province` LIKE '广州' AND `correct_province` IN ('广州','用户')";
 
 //exit($sql);
 $result = mysqli_query($conn, $sql);
@@ -101,6 +101,7 @@ if(!$result){
   $sheet->setCellValueByColumnAndRow(37,1, '故障详情');
   $sheet->setCellValueByColumnAndRow(38,1, '隐患');
   $sheet->setCellValueByColumnAndRow(39,1, '备注');
+  $sheet->setCellValueByColumnAndRow(40,1, '责任地市澄清');
   
   $i = 2;
   
@@ -144,7 +145,8 @@ if(!$result){
     $sheet->setCellValueByColumnAndRow(37,$i, $row['reasonDescription']);
     $sheet->setCellValueByColumnAndRow(38,$i, $row['hiddenDanger']);
     $sheet->setCellValueByColumnAndRow(39,$i, $row['remark']);
-    
+    $sheet->setCellValueByColumnAndRow(40,$i, $row['correct_province']);
+
     $i++;
   }
   

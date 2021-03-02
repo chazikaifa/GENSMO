@@ -49,6 +49,9 @@ $title_msg = [
   new TitleItem('handle_unit',['主要处理部门']),
   new TitleItem('remark',['故障申告备注']),
   new TitleItem('system_end_time',['最终销障时间','专席回访结单时间']),
+  new TitleItem('endProvince',['专席回访结单省']),
+  new TitleItem('problemProvince',['故障地点(省)']),
+  new TitleItem('customerProvince',['客户城市']),
 ];
 
 $circuit_pass = ['待用户填写','无','客户无法提供','-','无法提供','','不清楚','用户无法提供','0','temp_000'];
@@ -191,9 +194,22 @@ function judgeTrouble($json){
 }
 
 function judgeProvince($json){
-  if($json['province'] == '广东省广州市'){
-    $json['responsible_province'] = '广州';
+  if($json['endProvince'] == '广东省'){
+    if($json['problemProvince'] == '广东省'){
+      $json['responsible_province'] = mb_substr($json['province'], 3,2);
+    }else{
+      $json['responsible_province'] = mb_substr($json['customerProvince'], 3,2);
+    }
+  }else{
+    $json['responsible_province'] = $json['endProvince'];
   }
+
+  $json['correct_province'] = $json['responsible_province'];
+
+  unset($json['endProvince']);
+  unset($json['problemProvince']);
+  unset($json['customerProvince']);
+
   return $json;
 }
 

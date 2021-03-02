@@ -78,9 +78,9 @@ if($assess_time > $time_limit){
 
 if($province != ''){
   if($province == '用户'){
-    $sql = "UPDATE `assess_order` SET `responsible_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`is_assess`='0',`time_limit`=$time_limit,`TOP33`=$TOP33,`TOP210`=$TOP210,`TOP800`=$TOP800,`TOPN`=$TOPN,`assess_TOPN`=$assess_TOPN WHERE `orderID`='$id'";
+    $sql = "UPDATE `assess_order` SET `correct_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`is_assess`='0',`time_limit`=$time_limit,`TOP33`=$TOP33,`TOP210`=$TOP210,`TOP800`=$TOP800,`TOPN`=$TOPN,`assess_TOPN`=$assess_TOPN WHERE `orderID`='$id'";
   }else{
-    $sql = "UPDATE `assess_order` SET `responsible_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`is_assess`='1',`time_limit`=$time_limit,`TOP33`=$TOP33,`TOP210`=$TOP210,`TOP800`=$TOP800,`TOPN`=$TOPN,`assess_TOPN`=$assess_TOPN WHERE `orderID`='$id'";
+    $sql = "UPDATE `assess_order` SET `correct_province`='$province',`reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`is_assess`='1',`time_limit`=$time_limit,`TOP33`=$TOP33,`TOP210`=$TOP210,`TOP800`=$TOP800,`TOPN`=$TOPN,`assess_TOPN`=$assess_TOPN WHERE `orderID`='$id'";
   }
 }else{
   $sql = "UPDATE `assess_order` SET `reduce_time`=$reduce_time,`assessment_time`=$assess_time,`time_out`=$timeout,`time_limit`=$time_limit,`TOP33`=$TOP33,`TOP210`=$TOP210,`TOP800`=$TOP800,`TOPN`=$TOPN,`assess_TOPN`=$assess_TOPN WHERE `orderID`='$id'";
