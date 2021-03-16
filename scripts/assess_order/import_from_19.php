@@ -204,7 +204,7 @@ function judgeProvince($json){
     $json['responsible_province'] = $json['endProvince'];
   }
 
-  $json['correct_province'] = $json['responsible_province'];
+  $json['correct_province'] = mb_substr($json['province'], 3,2);
 
   unset($json['endProvince']);
   unset($json['problemProvince']);
